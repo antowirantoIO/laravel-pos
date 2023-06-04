@@ -83,8 +83,7 @@
     <!-- ./wrapper -->
     
     <script>
-        $(document).ready(function() {
-            setInterval(function() {
+        setInterval(function() {
                 var date = new Date();
                 var hours = date.getHours();
                 var minutes = date.getMinutes();
@@ -101,10 +100,8 @@
                 var strDate = day + '-' + month + '-' + year;
 
                 var date_time = strDate + ' ' + strTime;
-
-                $('#date_time').html(date_time);
+                document.getElementById('date_time').innerHTML = date_time;
             }, 1000);
-        });
     </script>
 
     @yield('js')
