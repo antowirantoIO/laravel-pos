@@ -34,8 +34,8 @@
             return prefix == undefined ? rupiah : rupiah ? prefix + rupiah : '';
         }
         window.APP = <?php echo json_encode([
-                            'currency_symbol' => "Rp. ",
-                            'warning_quantity' => 5
+                            'currency_symbol' => config('settings.currency_symbol'),
+                            'warning_quantity' => config('settings.warning_quantity'),
                         ]) ?>
     </script>
 </head>
