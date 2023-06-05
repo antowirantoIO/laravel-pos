@@ -73,6 +73,17 @@
             </div>
 
             <div class="form-group">
+                <label for="purchase_price">Purchase Price</label>
+                <input type="number" name="purchase_price" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_price"
+                    placeholder="purchase price" value="{{ old('purchase_price', $product->purchase_price) }}">
+                @error('purchase_price')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+
+            <div class="form-group">
                 <label for="quantity">Quantity</label>
                 <input type="text" name="quantity" class="form-control @error('quantity') is-invalid @enderror"
                     id="quantity" placeholder="Quantity" value="{{ old('quantity', $product->quantity) }}">

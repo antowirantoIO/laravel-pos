@@ -58,9 +58,20 @@
 
             <div class="form-group">
                 <label for="price">Price</label>
-                <input type="text" name="price" class="form-control @error('price') is-invalid @enderror" id="price"
+                <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" id="price"
                     placeholder="price" value="{{ old('price') }}">
                 @error('price')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="purchase_price">Purchase Price</label>
+                <input type="number" name="purchase_price" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_price"
+                    placeholder="purchase price" value="{{ old('purchase_price') }}">
+                @error('purchase_price')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>

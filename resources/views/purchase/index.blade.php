@@ -4,5 +4,4 @@
 
 @section('content')
     <div id="purchase"></div>
-
 @endsection

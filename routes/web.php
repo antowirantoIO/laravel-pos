@@ -40,6 +40,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/purchase/change-qty', [PurchaseController::class, 'changeQty']);
     Route::delete('/purchase/delete', [PurchaseController::class, 'delete']);
     Route::delete('/purchase/empty', [PurchaseController::class, 'empty']);
+
+    Route::get('/reports/laba_kotor', [App\Http\Controllers\ReportsController::class, 'laba_kotor'])->name('reports.laba_kotor');
 });
 
 Route::get('suppliers/json', function() {

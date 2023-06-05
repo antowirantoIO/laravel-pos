@@ -18,7 +18,7 @@ class OrderController extends Controller
         if($request->end_date) {
             $orders = $orders->where('created_at', '<=', $request->end_date . ' 23:59:59');
         }
-        $orders = $orders->with(['items', 'payments', 'customer'])->latest()->paginate(10);
+        $orders = $orders->where('supplier_id', '=', null)->with(['items', 'payments', 'customer'])->latest()->paginate(10);
 
         $total = $orders->map(function($i) {
             return $i->total();
@@ -66,11 +66,12 @@ class OrderController extends Controller
 
             foreach ($purchase as $item) {
                 $order->items()->create([
-                    'price' => $item->price * $item->pivot->quantity,
+                    'price' => $item->purchase_price * $item->pivot->quantity,
                     'quantity' => $item->pivot->quantity,
                     'product_id' => $item->id,
                 ]);
-                $sum += $item->price * $item->pivot->quantity;
+                
+                $sum += $item->purchase_price * $item->pivot->quantity;
                 $item->quantity = $item->quantity + $item->pivot->quantity;
                 $item->save();
             }

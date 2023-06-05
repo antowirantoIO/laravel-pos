@@ -22,12 +22,14 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-header">Dashboard</li>
                 <li class="nav-item has-treeview">
                     <a href="{{route('home')}}" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
+                <li class="nav-header">Management</li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('products.index') }}" class="nav-link {{ activeSegment('products') }}">
                         <i class="nav-icon fas fa-th-large"></i>
@@ -40,18 +42,20 @@
                         <p>Suppliers</p>
                     </a>
                 </li>
+                <li class="nav-header">POS</li>
 				<li class="nav-item has-treeview">
                     <a href="{{ route('purchase.index') }}" class="nav-link {{ activeSegment('purchase') }}">
-                        <i class="nav-icon fas fa-cart-plus"></i>
+                        <i class="nav-icon fas fa-tags"></i>
                         <p>Purchase</p>
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('cart.index') }}" class="nav-link {{ activeSegment('cart') }}">
-                        <i class="nav-icon fas fa-cart-plus"></i>
+                        <i class="nav-icon fas fa-barcode"></i>
                         <p>Open POS</p>
                     </a>
                 </li>
+                <li class="nav-header">Report</li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('orders.index') }}" class="nav-link {{ activeSegment('orders') }}">
                         <i class="nav-icon fas fa-cart-plus"></i>
@@ -60,9 +64,40 @@
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('orders.purchase') }}" class="nav-link {{ activeSegment('purchase_orders') }}">
-                        <i class="nav-icon fas fa-cart-plus"></i>
+                    <i class="nav-icon fas fa-cart-arrow-down"></i>
                         <p>Buy Orders</p>
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link {{ activeSegment('reports') }}">
+                        <i class="nav-icon fas fa-chart-pie"></i>
+                        <p> Reports <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                        <a href="{{ 
+                            route('reports.laba_kotor')
+                        }}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Laba Kotor</p>
+                        </a>
+                        </li>
+                        <li class="nav-item">
+                        <a href="pages/charts/flot.html" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Stock Barang</p>
+                        </a>
+                        </li>
+                        <li class="nav-item">
+                        <a href="pages/charts/inline.html" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Barang Akan Expired</p>
+                        </a>
+                        </li>
+                    </ul>
+                    </li>
+                <li class="nav-header">
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('settings.index') }}" class="nav-link {{ activeSegment('settings') }}">
@@ -70,6 +105,7 @@
                         <p>Settings</p>
                     </a>
                 </li>
+                
                 <li class="nav-item">
                     <a href="#" class="nav-link" onclick="document.getElementById('logout-form').submit()">
                         <i class="nav-icon fas fa-sign-out-alt"></i>

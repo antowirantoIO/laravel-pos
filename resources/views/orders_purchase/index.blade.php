@@ -58,6 +58,9 @@
                     <td>{{$order->created_at}}</td>
 					<td>
 					<a href="{{ route('orders.show', $order) }}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                    <a href="#" class="btn btn-warning">
+                        <i class="fas fa-print"></i>
+                    </a>
 					</td>
                 </tr>
                 @endforeach

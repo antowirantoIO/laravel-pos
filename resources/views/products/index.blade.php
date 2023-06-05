@@ -18,6 +18,7 @@
                     <th>Name</th>
                     <th>Barcode</th>
                     <th>Price</th>
+                    <th>Purchase Price</th>
                     <th>Expired Date</th>
                     <th>Quantity</th>
                     <th>Status</th>
@@ -36,7 +37,8 @@
                     <td>{{$product->name}}</td>
                     <td>{!! DNS1D::getBarcodeHTML("$product->barcode",'EAN13',2,100) !!}
 						{{$product->barcode}}</td>
-                    <td>{{$product->price}}</td>
+                    <td class="text-nowrap">{{ config('settings.currency_symbol') }} {{number_format($product->price)}}</td>
+                    <td>{{ config('settings.currency_symbol') }} {{number_format($product->purchase_price)}}</td>
                     <td>{{
                         $product->expired_date != null ? date('d-m-Y', strtotime($product->expired_date)) : ''
                     }}</td>

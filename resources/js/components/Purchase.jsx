@@ -86,7 +86,7 @@ class Purchase extends Component {
     }
 
     getTotal(cart) {
-        const total = cart.map((c) => c.pivot.quantity * c.price);
+        const total = cart.map((c) => c.pivot.quantity * c.purchase_price);
         return sum(total);
     }
     handleClickDelete(product_id) {
@@ -203,7 +203,7 @@ class Purchase extends Component {
                                         <tr>
                                             <th>Product Name</th>
                                             <th>Quantity</th>
-                                            <th className="text-right">Price</th>
+                                            <th className="text-right">Harga Beli</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -250,7 +250,7 @@ class Purchase extends Component {
                                                 </td>
                                                 <td className="text-right">
                                                     {window.APP.currency_symbol}{" "}
-                                                    {format_rupiah((c.price * c.pivot.quantity).toString())}
+                                                    {format_rupiah((c.purchase_price * c.pivot.quantity).toString())}
                                                 </td>
                                                 <td>
                                                 </td>
