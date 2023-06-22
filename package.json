@@ -27,6 +27,7 @@
         "admin-lte": "^3.2.0",
         "dateformat": "^5.0.3",
         "node": "^20.2.0",
+        "react-select": "^5.7.3",
         "sweetalert2": "^11.4.37"
     }
 }

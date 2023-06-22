@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { sum } from "lodash";
+import Select from 'react-select'
 
 class Purchase extends Component {
     constructor(props) {
@@ -11,7 +12,7 @@ class Purchase extends Component {
             cart: [],
             products: [],
             suppliers: [],
-            suppliers_id: "",
+            suppliers_id: null,
             search: "",
         };
 
@@ -38,8 +39,12 @@ class Purchase extends Component {
     loadSuppliers() {
         axios.get(`/suppliers/json`).then((res) => {
             const suppliers = res.data;
-            console.log(suppliers);
-            this.setState({ suppliers });
+           this.setState({
+                suppliers: suppliers.map((supplier) => ({
+                    value: supplier.id,
+                    label: supplier.supplier_name,
+                }))
+           });
         });
     }
 
@@ -161,6 +166,7 @@ class Purchase extends Component {
                     })
                     .then((res) => {
                         this.loadCart();
+                        this.setState({ suppliers_id: null });
                         return res.data;
                     })
                     .catch((err) => {
@@ -183,17 +189,11 @@ class Purchase extends Component {
                     <div className="col-md-6 col-lg-5">
                         <div className="row mb-2">
                             <div className="col-md-12">
-                                <select
-                                    className="form-control"
-                                    onChange={this.handleOnSupplierChange}
-                                >
-                                    <option value="">Pilih Supplier</option>
-                                    {
-                                        suppliers.map((supplier) => (
-                                            <option key={supplier.id} value={supplier.id}>{supplier.supplier_name}</option>
-                                        ))
-                                    }
-                                </select>
+                                <Select options={suppliers} 
+                                    onChange={(selected) => {
+                                        this.setState({ suppliers_id: selected.value });
+                                    }}
+                                />
                             </div>
                         </div>
                         <div className="user-cart">
@@ -255,6 +255,13 @@ class Purchase extends Component {
                                                     {format_rupiah((c.purchase_price * c.pivot.quantity).toString())}
                                                 </td>
                                                 <td>
+                                                    <i
+                                                        className="fas fa-trash text-danger"
+                                                        role="button"
+                                                        onClick={(event) =>
+                                                            this.handleClickDelete(c.id)
+                                                        }
+                                                    ></i>
                                                 </td>
                                             </tr>
                                         ))}

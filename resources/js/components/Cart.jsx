@@ -305,6 +305,15 @@ class Cart extends Component {
                                                     {format_rupiah((c.price * c.pivot.quantity).toString())}
                                                 </td>
                                                 <td>
+                                                    <i
+                                                        className="fas fa-trash text-danger"
+                                                        role="button"
+                                                        onClick={(event) =>
+                                                            this.handleClickDelete(
+                                                                c.id
+                                                            )
+                                                        }
+                                                    ></i>
                                                 </td>
                                             </tr>
                                         ))}
