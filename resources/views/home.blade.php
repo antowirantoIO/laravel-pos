@@ -7,7 +7,10 @@
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-info">
+            <div class="small-box bg-info" style="
+    min-height: 12rem;
+">
+              <div class="hstack" style="display: flex; flex-direction: column">
               <div class="inner">
                   <h3>{{$orders_count}}</h3>
                 <p>Orders Count</p>
@@ -15,15 +18,21 @@
               <div class="icon">
                 <i class="ion ion-bag"></i>
               </div>
+              <div class="small-box">
               <a href="{{route('orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+
+              </div>
+              </div>
             </div>
           </div>
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-success">
+            <div class="small-box bg-success" style="
+    min-height: 12rem;
+">
               <div class="inner">
-                  <h3>{{config('settings.currency_symbol')}} {{number_format($income, 2)}}</h3>
+                  <h3 style="text-wrap: balance">{{config('settings.currency_symbol')}} {{number_format($income, 2)}}</h3>
                 <p>Income</p>
               </div>
               <div class="icon">
@@ -35,7 +44,9 @@
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-danger">
+            <div class="small-box bg-danger" style="
+    min-height: 12rem;
+">
               <div class="inner">
                 <h3>{{config('settings.currency_symbol')}} {{number_format($income_today, 2)}}</h3>
 
@@ -49,7 +60,9 @@
           </div>
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-warning">
+            <div class="small-box bg-warning" style="
+    min-height: 12rem;
+">
               <div class="inner">
                   <h3>{{config('settings.currency_symbol')}} {{number_format($outcome, 2)}}</h3>
                 <p>Outcome</p>
@@ -57,7 +70,7 @@
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
               </div>
-              <a href="{{route('orders.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('orders.purchase')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->

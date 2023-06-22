@@ -58,8 +58,8 @@
 			$this = $(this);
 			const swalWithBootstrapButtons = Swal.mixin({
 					  customClass: {
-						confirmButton: 'btn btn-success',
-						cancelButton: 'btn btn-danger'
+						confirmButton: 'btn btn-success ml-2',
+						cancelButton: 'btn btn-danger mr-2'
 					  },
 					  buttonsStyling: false
 					})

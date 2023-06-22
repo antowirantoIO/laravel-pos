@@ -203,6 +203,7 @@ class Purchase extends Component {
                                         <tr>
                                             <th>Product Name</th>
                                             <th>Quantity</th>
+                                            <th>UoM</th>
                                             <th className="text-right">Harga Beli</th>
                                             <th></th>
                                         </tr>
@@ -248,6 +249,7 @@ class Purchase extends Component {
                                                         }
                                                     ></i>
                                                 </td>
+                                                <td>{c.uom}</td>
                                                 <td className="text-right">
                                                     {window.APP.currency_symbol}{" "}
                                                     {format_rupiah((c.purchase_price * c.pivot.quantity).toString())}

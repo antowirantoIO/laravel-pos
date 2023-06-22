@@ -21,6 +21,7 @@
                     <th>Purchase Price</th>
                     <th>Expired Date</th>
                     <th>Quantity</th>
+                    <th>UoM</th>
                     <th>Status</th>
                     <th>Created At</th>
                     <th>Updated At</th>
@@ -43,6 +44,9 @@
                         $product->expired_date != null ? date('d-m-Y', strtotime($product->expired_date)) : ''
                     }}</td>
                     <td>{{$product->quantity}}</td>
+                    <td>{{
+                        \App\Models\Product::UOM[$product->uom]
+                    }}</td>
                     <td>
                         <span
                             class="right badge badge-{{ $product->status ? 'success' : 'danger' }}">{{$product->status ? 'Active' : 'Inactive'}}</span>
@@ -72,8 +76,8 @@
             $this = $(this);
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
-                    confirmButton: 'btn btn-success',
-                    cancelButton: 'btn btn-danger'
+                    confirmButton: 'btn btn-success ml-2',
+                    cancelButton: 'btn btn-danger mr-2'
                 },
                 buttonsStyling: false
                 })

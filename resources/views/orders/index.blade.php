@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Orders List')
-@section('content-header', 'Order List')
+@section('content-header', 'Sell Order List')
 @section('content-actions')
     <a href="{{route('cart.index')}}" class="btn btn-primary">Open POS</a>
 @endsection

@@ -57,7 +57,7 @@
             </div>
 
             <div class="form-group">
-                <label for="price">Price</label>
+                <label for="price">Sell Price</label>
                 <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" id="price"
                     placeholder="price" value="{{ old('price') }}">
                 @error('price')
@@ -68,7 +68,7 @@
             </div>
 
             <div class="form-group">
-                <label for="purchase_price">Purchase Price</label>
+                <label for="purchase_price">Buy Price</label>
                 <input type="number" name="purchase_price" class="form-control @error('purchase_price') is-invalid @enderror" id="purchase_price"
                     placeholder="purchase price" value="{{ old('purchase_price') }}">
                 @error('purchase_price')
@@ -83,6 +83,23 @@
                 <label for="quantity">Quantity</label>
                 <input type="text" name="quantity" class="form-control @error('quantity') is-invalid @enderror"
                     id="quantity" placeholder="Quantity" value="{{ old('quantity', 1) }}">
+                @error('quantity')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="uom">UoM</label>
+
+                <select name="uom" class="form-control select @error('uom') is-invalid @enderror" style="height: 5rem" id="uom">
+                    @foreach (\App\Models\Product::UOM as $uom => $value)
+                    <option value="{{ $uom }}" {{ old('uom') == $uom ? 'selected' : '' }}>
+                        {{ $uom }}</option>
+                    @endforeach
+                </select>
+
                 @error('quantity')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -109,11 +126,25 @@
 </div>
 @endsection
 
+@section('css')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    .select2-container .select2-selection--single{
+        height: 40px !important;
+    }
+</style>
+@endsection
+
 @section('js')
 <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
 <script>
     $(document).ready(function () {
         bsCustomFileInput.init();
     });
+    $('.select').select2({
+        placeholder: 'Select an option'
+        });
 </script>
 @endsection

@@ -118,4 +118,19 @@ class OrderController extends Controller
 		//return($order);
 		//return DB::table('order')->join('order_items', 'order_items.order_id', '=', 'orders.id')->where('orders.id', "$order")->get();
 	}
+
+    public function show_purchase($orders)
+	{
+		//$orders = Order::all();
+		$orders = OrderItem::where('order_id', $orders)->get();
+		//$total = $orders->sum('total()');
+		$total = $orders->map(function($i) {
+        return $i->total();
+        })->sum();
+		return view('orders_purchase.show', compact('orders','total'));
+		//dd($orders);
+		//return view('orders.show')->with('order', $order);
+		//return($order);
+		//return DB::table('order')->join('order_items', 'order_items.order_id', '=', 'orders.id')->where('orders.id', "$order")->get();
+	}
 }

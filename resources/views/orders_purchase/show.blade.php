@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'Orders List')
-@section('content-header', 'Order List')
+@section('title', 'Buy Orders List')
+@section('content-header', 'Buy Order List')
 
 
 @section('content')
@@ -13,6 +13,7 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Quantity</th>
+                    <th>UOM</th>
                     <th>Price</th>
                     <th>Total</th>
                 </tr>
@@ -22,6 +23,7 @@
                 <tr>
                     <td>{{$order->id}}</td>
                     <td>{{$order->product->name}}</td>
+                    <td>{{$order->product->uom}}</td>
 					<td>{{$order->quantity}}</td>
 					<td>{{ config('settings.currency_symbol') }} {{ number_format($order->price, 0)}}</td>
 					<td>{{ config('settings.currency_symbol') }} {{ number_format($order->total(), 0) }}</td>
@@ -31,6 +33,7 @@
             </tbody>
 			<tfoot>
                 <tr>
+                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>
