@@ -61,7 +61,8 @@ class ProductController extends Controller
             'purchase_price' => $request->purchase_price,
             'expired_date' => $request->expired_date,
             'quantity' => $request->quantity,
-            'status' => $request->status
+            'status' => $request->status,
+            'uom' => $request->uom,
         ]);
 
         if (!$product) {
@@ -108,6 +109,7 @@ class ProductController extends Controller
         $product->purchase_price = $request->purchase_price;
         $product->expired_date = $request->expired_date;
         $product->quantity = $request->quantity;
+        $product->uom = $request->uom;
         $product->status = $request->status;
 
         if (!$product->save()) {

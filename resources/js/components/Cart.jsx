@@ -253,6 +253,7 @@ class Cart extends Component {
                                         <tr>
                                             <th>Product Name</th>
                                             <th>Quantity</th>
+                                            <th>UoM</th>
                                             <th className="text-right">Price</th>
                                             <th></th>
                                         </tr>
@@ -298,11 +299,21 @@ class Cart extends Component {
                                                         }
                                                     ></i>
                                                 </td>
+                                                <td>{c.uom}</td>
                                                 <td className="text-right">
                                                     {window.APP.currency_symbol}{" "}
                                                     {format_rupiah((c.price * c.pivot.quantity).toString())}
                                                 </td>
                                                 <td>
+                                                    <i
+                                                        className="fas fa-trash text-danger"
+                                                        role="button"
+                                                        onClick={(event) =>
+                                                            this.handleClickDelete(
+                                                                c.id
+                                                            )
+                                                        }
+                                                    ></i>
                                                 </td>
                                             </tr>
                                         ))}

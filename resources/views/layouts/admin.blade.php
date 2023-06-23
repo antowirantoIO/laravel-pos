@@ -13,6 +13,10 @@
     <!-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> -->
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    
+    <script src="
+    https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js
+    "></script>
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     

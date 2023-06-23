@@ -29,6 +29,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('orders', OrderController::class);
 	Route::resource('order_items', OrderItemController::class);
 
+    Route::get('/purchase_orders/show/{id}', [OrderController::class, 'show_purchase'])->name('orders.purchase_order');
+
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
     Route::post('/cart/change-qty', [CartController::class, 'changeQty']);

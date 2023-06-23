@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Orders List')
-@section('content-header', 'Order List')
+@section('content-header', 'Buy Order List')
 @section('content-actions')
     <a href="{{route('purchase.index')}}" class="btn btn-primary">Open Purchase</a>
 @endsection
@@ -57,7 +57,7 @@
                     </td>
                     <td>{{$order->created_at}}</td>
 					<td>
-					<a href="{{ route('orders.show', $order) }}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+					<a href="{{ route('orders.purchase_order', $order) }}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
                     <a href="#" class="btn btn-warning">
                         <i class="fas fa-print"></i>
                     </a>
