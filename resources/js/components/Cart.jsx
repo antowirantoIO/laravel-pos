@@ -357,6 +357,7 @@ class Cart extends Component {
                                 type="text"
                                 className="form-control"
                                 placeholder="Search Product..."
+                                onInput={this.handleChangeSearch}
                                 onChange={this.handleChangeSearch}
                                 onKeyDown={this.handleSeach}
                             />
