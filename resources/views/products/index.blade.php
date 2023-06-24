@@ -45,7 +45,7 @@
                     }}</td>
                     <td>{{$product->quantity}}</td>
                     <td>{{
-                        \App\Models\Product::UOM[$product->uom]
+                        \App\Models\Product::UOM[$product->uom] ?? ''
                     }}</td>
                     <td>
                         <span
