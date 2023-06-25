@@ -186,7 +186,7 @@ class Cart extends Component {
     }
     handleClickSubmit() {
         if(this.state.sales_type == "grocery") {
-            
+
         } else if(this.state.sales_type == "retail") {
             Swal.fire({
                 title: "Received Amount",
@@ -247,7 +247,7 @@ class Cart extends Component {
                             </div>
                         </div>
                         <div className="user-cart">
-                            <div className="card">
+                            <div className="card overflow-auto">
                                 <table className="table table-striped">
                                     <thead>
                                         <tr>
@@ -357,6 +357,7 @@ class Cart extends Component {
                                 type="text"
                                 className="form-control"
                                 placeholder="Search Product..."
+                                onInput={this.handleChangeSearch}
                                 onChange={this.handleChangeSearch}
                                 onKeyDown={this.handleSeach}
                             />

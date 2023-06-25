@@ -189,7 +189,7 @@ class Purchase extends Component {
                     <div className="col-md-6 col-lg-5">
                         <div className="row mb-2">
                             <div className="col-md-12">
-                                <Select options={suppliers} 
+                                <Select options={suppliers}
                                     onChange={(selected) => {
                                         this.setState({ suppliers_id: selected.value });
                                     }}
@@ -197,7 +197,7 @@ class Purchase extends Component {
                             </div>
                         </div>
                         <div className="user-cart">
-                            <div className="card">
+                            <div className="card overflow-auto">
                                 <table className="table table-striped">
                                     <thead>
                                         <tr>
@@ -305,6 +305,7 @@ class Purchase extends Component {
                                 type="text"
                                 className="form-control"
                                 placeholder="Search Product..."
+                                onInput={this.handleChangeSearch}
                                 onChange={this.handleChangeSearch}
                                 onKeyDown={this.handleSeach}
                             />

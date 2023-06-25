@@ -12,5 +12,5 @@ import './bootstrap';
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-import './components/Cart.jsx';
-import './components/Purchase.jsx';
+import '../../resources/js/components/Cart.jsx';
+import '../../resources/js/components/Purchase.jsx';
