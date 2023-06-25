@@ -43,7 +43,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::delete('/purchase/delete', [PurchaseController::class, 'delete']);
     Route::delete('/purchase/empty', [PurchaseController::class, 'empty']);
 
-    Route::get('/reports/laba_kotor', [App\Http\Controllers\ReportsController::class, 'laba_kotor'])->name('reports.laba_kotor');
+    Route::get('/reports', [App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
+    Route::get('/reports/download', [App\Http\Controllers\ReportsController::class, 'download'])->name('reports.download');
 });
 
 Route::get('suppliers/json', function() {

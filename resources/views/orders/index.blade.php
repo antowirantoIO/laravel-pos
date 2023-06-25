@@ -30,7 +30,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>No Invoice</th>
                     <!--<th>Customer Name</th>-->
                     <th>Total</th>
                     <th>Received Amount</th>
@@ -43,7 +43,9 @@
             <tbody>
                 @foreach ($orders as $order)
                 <tr>
-                    <td>{{$order->id}}</td>
+                    <td>{{
+                        'SO-' . $order->created_at->format('Y') . '/' . $order->created_at->format('dm') . '/' . str_pad($order->id, 4, '0', STR_PAD_LEFT)
+                    }}</td>
                     <!--<td>{{$order->getCustomerName()}}</td>-->
                     <td>{{ config('settings.currency_symbol') }} {{$order->formattedTotal()}}</td>
                     <td>{{ config('settings.currency_symbol') }} {{$order->formattedReceivedAmount()}}</td>

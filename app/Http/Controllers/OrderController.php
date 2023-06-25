@@ -107,11 +107,13 @@ class OrderController extends Controller
 		public function show($orders)
 	{
 		//$orders = Order::all();
-		$orders = OrderItem::where('order_id', $orders)->get();
+		$orders = OrderItem::where('order_id', $orders)->with('product')->get();
+
 		//$total = $orders->sum('total()');
 		$total = $orders->map(function($i) {
-        return $i->total();
+            return $i->product->price * $i->quantity;
         })->sum();
+
 		return view('orders.show', compact('orders','total'));
 		//dd($orders);
 		//return view('orders.show')->with('order', $order);
@@ -125,7 +127,7 @@ class OrderController extends Controller
 		$orders = OrderItem::where('order_id', $orders)->get();
 		//$total = $orders->sum('total()');
 		$total = $orders->map(function($i) {
-        return $i->total();
+            return $i->product->purchase_price * $i->quantity;
         })->sum();
 		return view('orders_purchase.show', compact('orders','total'));
 		//dd($orders);
