@@ -14,6 +14,7 @@ class Purchase extends Component {
             suppliers: [],
             suppliers_id: null,
             search: "",
+            options: [],
         };
 
         this.loadCart = this.loadCart.bind(this);
@@ -21,6 +22,7 @@ class Purchase extends Component {
         this.handleEmptyCart = this.handleEmptyCart.bind(this);
         this.loadProducts = this.loadProducts.bind(this);
         this.handleChangeSearch = this.handleChangeSearch.bind(this);
+        this.loadProductsSelect = this.loadProductsSelect.bind(this);
         this.handleSeach = this.handleSeach.bind(this);
         this.handleClickSubmit = this.handleClickSubmit.bind(this);
 
@@ -33,6 +35,7 @@ class Purchase extends Component {
         // load user cart
         this.loadCart();
         this.loadProducts();
+        this.loadProductsSelect();
         this.loadSuppliers();
     }
 
@@ -45,6 +48,16 @@ class Purchase extends Component {
                     label: supplier.supplier_name,
                 }))
            });
+        });
+    }
+
+    loadProductsSelect() {
+        axios.get(`/admin/products`).then((res) => {
+            const products = res.data.data;
+            const options = products.map((p) => {
+                return { value: p.barcode, label: p.name };
+            })
+            this.setState({ options });
         });
     }
 
@@ -108,8 +121,8 @@ class Purchase extends Component {
         });
     }
     handleChangeSearch(event) {
-        const search = event.target.value;
-        this.setState({ search });
+        const search = event.label;
+        this.loadProducts(search);
     }
 
     handleSeach(event) {
@@ -301,13 +314,8 @@ class Purchase extends Component {
                     </div>
                     <div className="col-md-6 col-lg-7">
                         <div className="mb-2">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search Product..."
-                                onInput={this.handleChangeSearch}
+                            <Select options={this.state.options} 
                                 onChange={this.handleChangeSearch}
-                                onKeyDown={this.handleSeach}
                             />
                         </div>
                         <div className="row">
