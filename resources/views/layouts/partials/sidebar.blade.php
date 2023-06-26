@@ -68,35 +68,12 @@
                         <p>Buy Orders</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link {{ activeSegment('reports') }}">
-                        <i class="nav-icon fas fa-chart-pie"></i>
-                        <p> Reports <i class="right fas fa-angle-left"></i>
-                        </p>
+                <li class="nav-item has-treeview">
+                    <a href="{{ route('reports.index') }}" class="nav-link {{ activeSegment('reports') }}">
+                    <i class="nav-icon fas fa-pie-chart"></i>
+                        <p>Laporan</p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                        <a href="{{ 
-                            route('reports.laba_kotor')
-                        }}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Laba Kotor</p>
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a href="pages/charts/flot.html" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Stock Barang</p>
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a href="pages/charts/inline.html" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Barang Akan Expired</p>
-                        </a>
-                        </li>
-                    </ul>
-                    </li>
+                </li>
                 <li class="nav-header">
                 </li>
                 <li class="nav-item has-treeview">

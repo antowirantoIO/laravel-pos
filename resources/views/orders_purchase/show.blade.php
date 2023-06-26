@@ -25,8 +25,8 @@
                     <td>{{$order->product->name}}</td>
                     <td>{{$order->product->uom}}</td>
 					<td>{{$order->quantity}}</td>
-					<td>{{ config('settings.currency_symbol') }} {{ number_format($order->price, 0)}}</td>
-					<td>{{ config('settings.currency_symbol') }} {{ number_format($order->total(), 0) }}</td>
+					<td>{{ config('settings.currency_symbol') }} {{ number_format($order->product->purchase_price, 0)}}</td>
+					<td>{{ config('settings.currency_symbol') }} {{ number_format($order->product->purchase_price * $order->quantity, 0) }}</td>
 
                 </tr>
                 @endforeach
