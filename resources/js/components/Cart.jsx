@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from "axios";
 import Swal from "sweetalert2";
 import { sum } from "lodash";
+import Select from 'react-select'
 
 class Cart extends Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class Cart extends Component {
             search: "",
             customer_id: "",
             sales_type: "retail",
+            options: []
         };
 
         this.loadCart = this.loadCart.bind(this);
@@ -26,6 +28,7 @@ class Cart extends Component {
         this.handleOnSalesTypeChange = this.handleOnSalesTypeChange.bind(this);
 
         this.loadProducts = this.loadProducts.bind(this);
+        this.loadProductsSelect = this.loadProductsSelect.bind(this);
         this.handleChangeSearch = this.handleChangeSearch.bind(this);
         this.handleSeach = this.handleSeach.bind(this);
         this.setCustomerId = this.setCustomerId.bind(this);
@@ -36,13 +39,28 @@ class Cart extends Component {
         // load user cart
         this.loadCart();
         this.loadProducts();
+        this.loadProductsSelect();
         this.loadCustomers();
+    }
+
+    componentWillUnmount() {
+        this.handleEmptyCart();
     }
 
     loadCustomers() {
         axios.get(`/admin/customers`).then((res) => {
             const customers = res.data;
             this.setState({ customers });
+        });
+    }
+
+    loadProductsSelect() {
+        axios.get(`/admin/products`).then((res) => {
+            const products = res.data.data;
+            const options = products.map((p) => {
+                return { value: p.barcode, label: p.name };
+            })
+            this.setState({ options });
         });
     }
 
@@ -87,7 +105,7 @@ class Cart extends Component {
         }
     }
     handleChangeQty(product_id, qty) {
-        if(qty < 1) {
+        if (qty < 1) {
             this.handleClickDelete(product_id);
         };
 
@@ -127,8 +145,7 @@ class Cart extends Component {
         });
     }
     handleChangeSearch(event) {
-        const search = event.target.value;
-        this.setState({ search });
+        this.loadProducts(event.label);
     }
     handleSeach(event) {
         if (event.keyCode === 13) {
@@ -185,9 +202,40 @@ class Cart extends Component {
         this.setState({ customer_id: event.target.value });
     }
     handleClickSubmit() {
-        if(this.state.sales_type == "grocery") {
+        if (this.state.sales_type == "grocery") {
+            Swal.fire({
+                title: 'Confirm Sale',
+                html:
+                    '<input id="swal-input1" ' + 'value="' + this.getTotal(this.state.cart) + '"' + ' placeholder="Amount" class="swal2-input">' +
+                    '<input id="swal-input2" placeholder="Jatuh Tempo (hari)" class="swal2-input">',
+                focusConfirm: false,
+                preConfirm: async () => {
+                    var due_date = document.getElementById('swal-input2').value;
 
-        } else if(this.state.sales_type == "retail") {
+                    return await axios
+                        .post("/admin/orders", {
+                            customer_id: this.state.customer_id,
+                            amount: document.getElementById('swal-input1').value,
+                            due_date: due_date,
+                        })
+                        .then((res) => {
+                            this.loadCart();
+                            return res.data;
+                        })
+                        .catch((err) => {
+                            Swal.showValidationMessage(err.response.data.message);
+                        });
+                },
+                allowOutsideClick: () => !Swal.isLoading(),
+            }).then((result) => {
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Order has been created',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                })
+            });
+        } else if (this.state.sales_type == "retail") {
             Swal.fire({
                 title: "Received Amount",
                 input: "text",
@@ -217,6 +265,7 @@ class Cart extends Component {
             });
         }
     }
+
     render() {
         const { cart, products, customers, barcode } = this.state;
         return (
@@ -353,13 +402,16 @@ class Cart extends Component {
                     </div>
                     <div className="col-md-6 col-lg-7">
                         <div className="mb-2">
-                            <input
+                            {/* <input
                                 type="text"
                                 className="form-control"
                                 placeholder="Search Product..."
                                 onInput={this.handleChangeSearch}
                                 onChange={this.handleChangeSearch}
                                 onKeyDown={this.handleSeach}
+                            /> */}
+                            <Select options={this.state.options} 
+                                onChange={this.handleChangeSearch}
                             />
                         </div>
                         <div className="row">

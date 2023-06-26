@@ -13,6 +13,7 @@ class Order extends Model
         'quantity',
         'product_id',
         'order_id',
+        'due_day',
         'supplier_id',
     ];
 

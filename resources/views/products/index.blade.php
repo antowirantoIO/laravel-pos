@@ -11,7 +11,7 @@
 @section('content')
 <div class="card product-list">
     <div class="card-body">
-        <table class="table">
+        <table class="table table-datatable">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -63,7 +63,6 @@
                 @endforeach
             </tbody>
         </table>
-        {{ $products->render() }}
     </div>
 </div>
 @endsection
@@ -72,6 +71,10 @@
 <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
 <script>
     $(document).ready(function () {
+        var table = $('.table-datatable').DataTable({
+        "order": [[ 5, "desc" ]],
+        scrollX: true,
+    });
         $(document).on('click', '.btn-delete', function () {
             $this = $(this);
             const swalWithBootstrapButtons = Swal.mixin({

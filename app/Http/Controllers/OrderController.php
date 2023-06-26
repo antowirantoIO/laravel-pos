@@ -18,7 +18,7 @@ class OrderController extends Controller
         if($request->end_date) {
             $orders = $orders->where('created_at', '<=', $request->end_date . ' 23:59:59');
         }
-        $orders = $orders->where('supplier_id', '=', null)->with(['items', 'payments', 'customer'])->latest()->paginate(10);
+        $orders = $orders->where('supplier_id', '=', null)->with(['items', 'payments', 'customer'])->latest()->get();
 
         $total = $orders->map(function($i) {
             return $i->total();
@@ -39,7 +39,7 @@ class OrderController extends Controller
         if($request->end_date) {
             $orders = $orders->where('created_at', '<=', $request->end_date . ' 23:59:59');
         }
-        $orders = $orders->where('supplier_id', '!=', null)->with(['items', 'payments', 'supplier'])->latest()->paginate(10);
+        $orders = $orders->where('supplier_id', '!=', null)->with(['items', 'payments', 'supplier'])->latest()->get();
 
         $total = $orders->map(function($i) {
             return $i->total();
@@ -53,10 +53,12 @@ class OrderController extends Controller
 
     public function store(OrderStoreRequest $request)
     {
+        $due_day = date('Y-m-d', strtotime('+' . $request->due_date . ' days'));
         $order = Order::create([
             //'customer_id' => $request->customer_id,
             'user_id' => $request->user()->id,
             'supplier_id' => $request->supplier_id ?? null,
+            'due_day' =>  $due_day ?? null,
         ]);
 
         if($request->supplier_id != null){
@@ -98,10 +100,12 @@ class OrderController extends Controller
             $item->save();
         }
         $request->user()->cart()->detach();
-        $order->payments()->create([
-            'amount' => $request->amount,
-            'user_id' => $request->user()->id,
-        ]);
+        if($request->due_date == null) {
+            $order->payments()->create([
+                'amount' => $request->amount,
+                'user_id' => $request->user()->id,
+            ]);
+        }
         return 'success';
     }
 		public function show($orders)

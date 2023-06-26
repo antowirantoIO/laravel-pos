@@ -11,7 +11,7 @@
 @section('content')
 <div class="card">
 <div class="card-body">
-<table class="table">
+<table class="table table-datatable">
 	<thead>
 	<tr>
 		<th>ID</th>
@@ -45,7 +45,6 @@
 	@endforeach
 	</tbody>
 </table>
-{{ $suppliers->render() }}
 </div>
 	</div>
 @endsection
@@ -53,6 +52,9 @@
 @section('js')
 <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
 <script>
+    var table = $('.table-datatable').DataTable({
+        "order": [[ 5, "desc" ]]
+    });
 	//$(document).ready(function () {
 		$(document).on('click', '.btn-delete', function () {
 			$this = $(this);

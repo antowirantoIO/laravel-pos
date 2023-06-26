@@ -10,24 +10,23 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            <div class="col-md-7"></div>
             <div class="col-md-5">
                 <form action="{{route('orders.index')}}">
-                    <div class="row">
-                        <div class="col-md-5">
+                    <div class="d-flex" style="gap: 10px; padding-bottom: 40px">
+                        <div>
                             <input type="date" name="start_date" class="form-control" value="{{request('start_date')}}" />
                         </div>
-                        <div class="col-md-5">
+                        <div>
                             <input type="date" name="end_date" class="form-control" value="{{request('end_date')}}" />
                         </div>
-                        <div class="col-md-2">
+                        <div>
                             <button class="btn btn-outline-primary" type="submit">Submit</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-        <table class="table">
+        <table class="table table-datatable">
             <thead>
                 <tr>
                     <th>No Invoice</th>
@@ -83,8 +82,15 @@
                 </tr>
             </tfoot>
         </table>
-        {{ $orders->render() }}
     </div>
 </div>
+@endsection
+
+@section('js')
+<script>
+    var table = $('.table-datatable').DataTable({
+        "order": [[ 5, "desc" ]]
+    });
+</script>
 @endsection
 

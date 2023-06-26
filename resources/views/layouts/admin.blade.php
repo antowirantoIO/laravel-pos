@@ -12,11 +12,12 @@
     <!-- overlayScrollbars -->
     <!-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> -->
     <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-    
     <script src="
     https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js
     "></script>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     

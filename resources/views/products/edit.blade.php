@@ -125,6 +125,7 @@
             </div>
 
             <button class="btn btn-primary" type="submit">Update</button>
+            <a href="/admin/products" class="btn btn-danger">Cancle</a>
         </form>
     </div>
 </div>
