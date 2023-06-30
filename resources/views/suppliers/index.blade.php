@@ -20,7 +20,7 @@
 	</div>
 <div class="card-body">
 <table class="table table-datatable">
-	<thead>
+<thead style="background: #F4F6F9">
 	<tr>
 		<th>ID</th>
 		<!--<th>Avatar</th>-->

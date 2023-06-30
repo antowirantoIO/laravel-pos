@@ -36,7 +36,7 @@
     </div>
     <div class="card-body">
         <table class="table table-datatable">
-            <thead>
+        <thead style="background: #F4F6F9">
                 <tr>
                     <th>No Invoice</th>
                     <th>Supplier Name</th>
@@ -95,7 +95,7 @@
 @section('js')
 <script>
     var table = $('.table-datatable').DataTable({
-        "order": [[ 6, "desc" ]]
+        "order": [[ 5, "desc" ]]
     });
 </script>
 @endsection

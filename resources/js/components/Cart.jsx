@@ -43,10 +43,6 @@ class Cart extends Component {
         this.loadCustomers();
     }
 
-    componentWillUnmount() {
-        this.handleEmptyCart();
-    }
-
     loadCustomers() {
         axios.get(`/admin/customers`).then((res) => {
             const customers = res.data;
@@ -83,25 +79,16 @@ class Cart extends Component {
     }
 
     loadCart() {
-        axios.get("/admin/cart").then((res) => {
-            const cart = res.data;
-            this.setState({ cart });
-        });
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        this.setState({ cart });
     }
 
     handleScanBarcode(event) {
         event.preventDefault();
         const { barcode } = this.state;
         if (!!barcode) {
-            axios
-                .post("/admin/cart", { barcode })
-                .then((res) => {
-                    this.loadCart();
-                    this.setState({ barcode: "" });
-                })
-                .catch((err) => {
-                    Swal.fire("Error!", err.response.data.message, "error");
-                });
+            this.addProductToCart(barcode);
+            this.setState({ barcode: "" });
         }
     }
     handleChangeQty(product_id, qty) {
@@ -119,12 +106,7 @@ class Cart extends Component {
         this.setState({ cart });
         if (!qty) return;
 
-        axios
-            .post("/admin/cart/change-qty", { product_id, quantity: qty })
-            .then((res) => { })
-            .catch((err) => {
-                Swal.fire("Error!", err.response.data.message, "error");
-            });
+        localStorage.setItem("cart", JSON.stringify(cart));
     }
 
     getTotal(cart) {
@@ -132,17 +114,14 @@ class Cart extends Component {
         return sum(total);
     }
     handleClickDelete(product_id) {
-        axios
-            .post("/admin/cart/delete", { product_id, _method: "DELETE" })
-            .then((res) => {
-                const cart = this.state.cart.filter((c) => c.id !== product_id);
-                this.setState({ cart });
-            });
+        const cart = this.state.cart.filter((c) => c.id !== product_id);
+        this.setState({ cart });
+
+        localStorage.setItem("cart", JSON.stringify(cart));
     }
     handleEmptyCart() {
-        axios.post("/admin/cart/empty", { _method: "DELETE" }).then((res) => {
-            this.setState({ cart: [] });
-        });
+        localStorage.removeItem("cart");
+        this.setState({ cart: [] });
     }
     handleChangeSearch(event) {
         this.loadProducts(event.label);
@@ -186,15 +165,7 @@ class Cart extends Component {
                 }
             }
 
-            axios
-                .post("/admin/cart", { barcode })
-                .then((res) => {
-                    // this.loadCart();
-                    // console.log(res);
-                })
-                .catch((err) => {
-                    Swal.fire("Error!", err.response.data.message, "error");
-                });
+            localStorage.setItem("cart", JSON.stringify([...this.state.cart, product]));
         }
     }
 
@@ -217,8 +188,10 @@ class Cart extends Component {
                             customer_id: this.state.customer_id,
                             amount: document.getElementById('swal-input1').value,
                             due_date: due_date,
+                            cart: this.state.cart
                         })
                         .then((res) => {
+                            localStorage.removeItem("cart");
                             this.loadCart();
                             return res.data;
                         })
@@ -240,9 +213,11 @@ class Cart extends Component {
                     return axios
                         .post("/admin/orders", {
                             customer_id: this.state.customer_id,
+                            cart: this.state.cart,
                             amount,
                         })
                         .then((res) => {
+                            localStorage.removeItem("cart");
                             this.loadCart();
                             return res.data;
                         })

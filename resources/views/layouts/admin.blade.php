@@ -113,6 +113,16 @@
                 var date_time = strDate + ' ' + strTime;
                 document.getElementById('date_time').innerHTML = date_time;
             }, 1000);
+
+            var url = window.location.pathname;
+            if (url != '/admin/cart' || url != '/admin/purchase'){
+                localStorage.removeItem('cart');
+                localStorage.removeItem('cart_purchase');
+            }
+
+        //     return axios.post("/admin/cart/empty", { _method: "DELETE" }).then((res) => {
+        //     this.setState({ cart: [] });
+        // });
     </script>
 
     @yield('js')

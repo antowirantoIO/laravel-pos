@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\OrderStoreRequest;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\OrderStoreRequest;
 
 class OrderController extends Controller
 {
@@ -64,23 +65,24 @@ class OrderController extends Controller
         ]);
 
         if($request->supplier_id != null){
-            $purchase = $request->user()->purchase()->get();
             
+            $purchase = $request->cart;
+        
             $sum = 0;
 
             foreach ($purchase as $item) {
                 $order->items()->create([
-                    'price' => $item->purchase_price * $item->pivot->quantity,
-                    'quantity' => $item->pivot->quantity,
-                    'product_id' => $item->id,
+                    'price' => $item["purchase_price"] * $item["pivot"]["quantity"],
+                    'quantity' => $item["pivot"]["quantity"],
+                    'product_id' => $item["id"],
                 ]);
                 
-                $sum += $item->purchase_price * $item->pivot->quantity;
-                $item->quantity = $item->quantity + $item->pivot->quantity;
-                $item->save();
-            }
+                $sum += $item["purchase_price"] * $item["pivot"]["quantity"];
 
-            $request->user()->purchase()->detach();
+                $product = Product::find($item["id"]);
+                $product->quantity = $product->quantity + $item["pivot"]["quantity"];
+                $product->save();
+            }
 
             $order->payments()->create([
                 'amount' => $sum,
@@ -91,17 +93,20 @@ class OrderController extends Controller
             return 'success';
         }
 
-        $cart = $request->user()->cart()->get();
+        $cart = $request->cart;
+
         foreach ($cart as $item) {
             $order->items()->create([
-                'price' => $item->price * $item->pivot->quantity,
-                'quantity' => $item->pivot->quantity,
-                'product_id' => $item->id,
+                'price' => $item["price"] * $item["pivot"]["quantity"],
+                'quantity' => $item["pivot"]["quantity"],
+                'product_id' => $item["id"],
             ]);
-            $item->quantity = $item->quantity - $item->pivot->quantity;
-            $item->save();
+
+            $product = Product::find($item["id"]);
+            $product->quantity = $product->quantity - $item["pivot"]["quantity"];
+            $product->save();
         }
-        $request->user()->cart()->detach();
+
         if($request->due_date == null) {
             $order->payments()->create([
                 'amount' => $request->amount,

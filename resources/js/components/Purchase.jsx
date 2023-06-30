@@ -75,10 +75,8 @@ class Purchase extends Component {
     }
 
     loadCart() {
-        axios.get("/admin/purchase").then((res) => {
-            const cart = res.data;
-            this.setState({ cart });
-        });
+        const cart = JSON.parse(localStorage.getItem("cart_purchase")) || [];
+        this.setState({ cart });
     }
     handleChangeQty(product_id, qty) {
         if(qty < 1) {
@@ -95,12 +93,7 @@ class Purchase extends Component {
         this.setState({ cart });
         if (!qty) return;
 
-        axios
-            .post("/admin/purchase/change-qty", { product_id, quantity: qty })
-            .then((res) => { })
-            .catch((err) => {
-                Swal.fire("Error!", err.response.data.message, "error");
-            });
+        localStorage.setItem("cart_purchase", JSON.stringify(cart));
     }
 
     getTotal(cart) {
@@ -108,17 +101,14 @@ class Purchase extends Component {
         return sum(total);
     }
     handleClickDelete(product_id) {
-        axios
-            .post("/admin/purchase/delete", { product_id, _method: "DELETE" })
-            .then((res) => {
-                const cart = this.state.cart.filter((c) => c.id !== product_id);
-                this.setState({ cart });
-            });
+        const cart = this.state.cart.filter((c) => c.id !== product_id);
+        this.setState({ cart });
+
+        localStorage.setItem("cart_purchase", JSON.stringify(cart));
     }
     handleEmptyCart() {
-        axios.post("/admin/purchase/empty", { _method: "DELETE" }).then((res) => {
-            this.setState({ cart: [] });
-        });
+        localStorage.removeItem("cart_purchase");
+        this.setState({ cart: [] });
     }
     handleChangeSearch(event) {
         const search = event.label;
@@ -155,14 +145,7 @@ class Purchase extends Component {
                 })
             }
 
-            axios
-                .post("/admin/purchase", { barcode })
-                .then((res) => {
-                    this.loadCart();
-                })
-                .catch((err) => {
-                    Swal.fire("Error!", err.response.data.message, "error");
-                });
+            localStorage.setItem("cart_purchase", JSON.stringify([...this.state.cart, product]));
         }
     }
 
@@ -176,8 +159,10 @@ class Purchase extends Component {
                 return await axios
                     .post("/admin/orders", {
                         supplier_id: this.state.suppliers_id,
+                        cart: this.state.cart
                     })
                     .then((res) => {
+                        localStorage.removeItem("cart_purchase");
                         this.loadCart();
                         this.setState({ suppliers_id: null });
                         return res.data;
