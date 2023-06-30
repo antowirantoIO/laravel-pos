@@ -3,34 +3,42 @@
 @section('title', 'Orders List')
 @section('content-header', 'Sell Order List')
 @section('content-actions')
-    <a href="{{route('cart.index')}}" class="btn btn-primary">Open POS</a>
+    <!-- <a href="{{route('cart.index')}}" class="btn btn-primary">Open POS</a> -->
+    <ol class="breadcrumb float-sm-right">
+<li class="breadcrumb-item"><a href="#">Home</a></li>
+<li class="breadcrumb-item active">Sell Order</li>
+</ol>
 @endsection
 
 @section('content')
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-5">
-                <form action="{{route('orders.index')}}">
-                    <div class="d-flex" style="gap: 10px; padding-bottom: 40px">
-                        <div>
-                            <input type="date" name="start_date" class="form-control" value="{{request('start_date')}}" />
-                        </div>
-                        <div>
-                            <input type="date" name="end_date" class="form-control" value="{{request('end_date')}}" />
-                        </div>
-                        <div>
-                            <button class="btn btn-outline-primary" type="submit">Submit</button>
-                        </div>
-                    </div>
-                </form>
+<div class="card card-primary card-outline">
+    <div class="card-header bg-white">
+        <div class="d-flex justify-content-between">
+        <div>
+        <form action="{{route('orders.index')}}">
+            <div class="d-flex" style="gap: 10px;">
+                <div>
+                    <input type="date" name="start_date" class="form-control" value="{{request('start_date')}}" />
+                </div>
+                <div>
+                    <input type="date" name="end_date" class="form-control" value="{{request('end_date')}}" />
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary" type="submit">Cari</button>
+                </div>
             </div>
+        </form>
         </div>
+        <div>
+        <a href="{{route('cart.index')}}" class="btn btn-primary">Open POS</a>
+        </div>
+        </div>
+    </div>
+    <div class="card-body">
         <table class="table table-datatable">
             <thead>
                 <tr>
                     <th>No Invoice</th>
-                    <!--<th>Customer Name</th>-->
                     <th>Total</th>
                     <th>Received Amount</th>
                     <th>Status</th>
@@ -45,7 +53,6 @@
                     <td>{{
                         'SO-' . $order->created_at->format('Y') . '/' . $order->created_at->format('dm') . '/' . str_pad($order->id, 4, '0', STR_PAD_LEFT)
                     }}</td>
-                    <!--<td>{{$order->getCustomerName()}}</td>-->
                     <td>{{ config('settings.currency_symbol') }} {{$order->formattedTotal()}}</td>
                     <td>{{ config('settings.currency_symbol') }} {{$order->formattedReceivedAmount()}}</td>
                     <td>
@@ -60,7 +67,10 @@
                         @endif
                     </td>
                     <td>{{config('settings.currency_symbol')}} {{number_format($order->total() - $order->receivedAmount(), 2)}}</td>
-                    <td>{{$order->created_at}}</td>
+                    <td>{{
+                        // format to 10 Juni 2022
+                        $order->created_at->isoFormat('D MMMM Y')
+                    }}</td>
 					<td>
 					<a href="{{ route('orders.show', $order) }}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
 					<a href="#" class="btn btn-warning">
@@ -89,7 +99,7 @@
 @section('js')
 <script>
     var table = $('.table-datatable').DataTable({
-        "order": [[ 5, "desc" ]]
+        "order": [[ 6, "desc" ]]
     });
 </script>
 @endsection

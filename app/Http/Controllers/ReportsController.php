@@ -22,7 +22,10 @@ class ReportsController extends Controller
         $years = array_reverse($years);
         $months = array_reverse($months);
 
-        return view('reports.index', compact('months', 'years'));
+        $selected_month = strtolower(date('F'));
+        $selected_year = date('Y');
+
+        return view('reports.index', compact('months', 'years', 'selected_month', 'selected_year'));
     }
 
     public function download(Request $request){
@@ -37,5 +40,7 @@ class ReportsController extends Controller
         if($type == 'barang_expired') {
             return Excel::download(new ProductExpiredExport, 'barang_expired' . $month . '-' . $year . '.xlsx');
         }
+
+        return redirect()->back();
     }
 }

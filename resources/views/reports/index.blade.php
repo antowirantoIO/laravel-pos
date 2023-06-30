@@ -72,9 +72,9 @@
         placeholder: 'Select an option'
         });
 
-    var jenis_laporan = ""
-    var bulan = ""
-    var tahun = ""
+    var jenis_laporan = "laba_rugi"
+    var bulan = "{{$selected_month}}"
+    var tahun = "{{ $selected_year }}"
 
     $("#laporan").change(function(){
         jenis_laporan = $(this).val()

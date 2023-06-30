@@ -12,6 +12,7 @@ class OrderController extends Controller
 {
     public function index(Request $request) {
         $orders = new Order();
+        $orders->orderBy('created_at', 'desc');
         if($request->start_date) {
             $orders = $orders->where('created_at', '>=', $request->start_date);
         }
@@ -19,20 +20,21 @@ class OrderController extends Controller
             $orders = $orders->where('created_at', '<=', $request->end_date . ' 23:59:59');
         }
         $orders = $orders->where('supplier_id', '=', null)->with(['items', 'payments', 'customer'])->latest()->get();
-
+        
         $total = $orders->map(function($i) {
             return $i->total();
         })->sum();
         $receivedAmount = $orders->map(function($i) {
             return $i->receivedAmount();
         })->sum();
-
+        
         return view('orders.index', compact('orders', 'total', 'receivedAmount'));
     }
 
     public function purchase(Request $request)
     {
         $orders = new Order();
+        $orders->orderBy('created_at', 'desc');
         if($request->start_date) {
             $orders = $orders->where('created_at', '>=', $request->start_date);
         }

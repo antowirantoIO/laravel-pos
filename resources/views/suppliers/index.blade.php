@@ -3,13 +3,21 @@
 @section('title', 'Supplier List')
 @section('content-header', 'Supplier List')
 @section('content-actions')
-<a href="{{ route('suppliers.create') }}" class="btn btn-primary">Create Supplier</a>
+<ol class="breadcrumb float-sm-right">
+<li class="breadcrumb-item"><a href="#">Home</a></li>
+<li class="breadcrumb-item active">Supplier</li>
+</ol>
 @endsection
 @section('css')
 <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
 @endsection
 @section('content')
-<div class="card">
+<div class="card card-primary card-outline">
+	<div class="card-header bg-white">
+		<div>
+		<a href="{{ route('suppliers.create') }}" class="btn text-white btn-primary">Tambah Supplier</a>
+		</div>
+	</div>
 <div class="card-body">
 <table class="table table-datatable">
 	<thead>

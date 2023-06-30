@@ -3,29 +3,38 @@
 @section('title', 'Orders List')
 @section('content-header', 'Buy Order List')
 @section('content-actions')
-    <a href="{{route('purchase.index')}}" class="btn btn-primary">Open Purchase</a>
+    <!-- <a href="{{route('purchase.index')}}" class="btn btn-primary">Open Purchase</a> -->
+    <ol class="breadcrumb float-sm-right">
+<li class="breadcrumb-item"><a href="#">Home</a></li>
+<li class="breadcrumb-item active">Buy Order</li>
+</ol>
 @endsection
 
 @section('content')
-<div class="card">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-5">
-                <form action="{{route('orders.index')}}">
-                    <div class="d-flex" style="gap: 10px; padding-bottom: 40px">
-                        <div>
-                            <input type="date" name="start_date" class="form-control" value="{{request('start_date')}}" />
-                        </div>
-                        <div>
-                            <input type="date" name="end_date" class="form-control" value="{{request('end_date')}}" />
-                        </div>
-                        <div>
-                            <button class="btn btn-outline-primary" type="submit">Submit</button>
-                        </div>
-                    </div>
-                </form>
+<div class="card card-primary card-outline">
+<div class="card-header bg-white">
+        <div class="d-flex justify-content-between">
+        <div>
+        <form action="{{route('orders.index')}}">
+            <div class="d-flex" style="gap: 10px;">
+                <div>
+                    <input type="date" name="start_date" class="form-control" value="{{request('start_date')}}" />
+                </div>
+                <div>
+                    <input type="date" name="end_date" class="form-control" value="{{request('end_date')}}" />
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary" type="submit">Cari</button>
+                </div>
             </div>
+        </form>
         </div>
+        <div>
+        <a href="{{route('purchase.index')}}" class="btn btn-primary">Open Purchase</a>
+        </div>
+        </div>
+    </div>
+    <div class="card-body">
         <table class="table table-datatable">
             <thead>
                 <tr>
@@ -56,7 +65,9 @@
                             <span class="badge badge-info">Change</span>
                         @endif
                     </td>
-                    <td>{{$order->created_at}}</td>
+                    <td>{{
+                        $order->created_at->isoFormat('D MMMM Y')
+                    }}</td>
 					<td>
 					<a href="{{ route('orders.purchase_order', $order) }}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
                     <a href="#" class="btn btn-warning">
@@ -84,7 +95,7 @@
 @section('js')
 <script>
     var table = $('.table-datatable').DataTable({
-        "order": [[ 5, "desc" ]]
+        "order": [[ 6, "desc" ]]
     });
 </script>
 @endsection

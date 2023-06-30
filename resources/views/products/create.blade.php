@@ -36,7 +36,7 @@
 
             <div class="form-group">
                 <label for="barcode">Barcode</label>
-                <input type="text" name="barcode" class="form-control @error('barcode') is-invalid @enderror"
+                <input type="number" max="12"  name="barcode" class="form-control @error('barcode') is-invalid @enderror"
                     id="barcode" placeholder="barcode" value="{{ old('barcode') }}">
                 @error('barcode')
                 <span class="invalid-feedback" role="alert">

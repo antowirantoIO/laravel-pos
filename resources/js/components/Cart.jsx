@@ -227,13 +227,6 @@ class Cart extends Component {
                         });
                 },
                 allowOutsideClick: () => !Swal.isLoading(),
-            }).then((result) => {
-                Swal.fire({
-                    title: 'Success',
-                    text: 'Order has been created',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                })
             });
         } else if (this.state.sales_type == "retail") {
             Swal.fire({
