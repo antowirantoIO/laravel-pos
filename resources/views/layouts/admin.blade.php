@@ -119,10 +119,6 @@
                 localStorage.removeItem('cart');
                 localStorage.removeItem('cart_purchase');
             }
-
-        //     return axios.post("/admin/cart/empty", { _method: "DELETE" }).then((res) => {
-        //     this.setState({ cart: [] });
-        // });
     </script>
 
     @yield('js')

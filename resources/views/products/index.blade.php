@@ -77,6 +77,21 @@
     $(document).ready(function () {
         var table = $('.table-datatable').DataTable({
         "order": [[ 5, "desc" ]],
+        columnDefs: [
+            { width: '10%', targets: 0 },
+            { width: '10%', targets: 1 },
+            { width: '10%', targets: 2 },
+            { width: '10%', targets: 3 },
+            { width: '10%', targets: 4 },
+            { width: '10%', targets: 5 },
+            { width: '10%', targets: 6 },
+            { width: '10%', targets: 7 },
+            { width: '10%', targets: 8 },
+            { width: '10%', targets: 9 },
+        ],
+        fixedColumns: true,
+        paging: false,
+        scrollCollapse: true,
         scrollX: true,
         });
         $(document).on('click', '.btn-delete', function () {

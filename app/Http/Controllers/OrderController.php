@@ -58,7 +58,6 @@ class OrderController extends Controller
     {
         $due_day = date('Y-m-d', strtotime('+' . $request->due_date . ' days'));
         $order = Order::create([
-            //'customer_id' => $request->customer_id,
             'user_id' => $request->user()->id,
             'supplier_id' => $request->supplier_id ?? null,
             'due_day' =>  $due_day ?? null,

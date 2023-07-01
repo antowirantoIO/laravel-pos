@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import axios from "axios";
 import Swal from "sweetalert2";
 import { sum } from "lodash";
-import Select from 'react-select'
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 class Cart extends Component {
     constructor(props) {
@@ -15,7 +16,10 @@ class Cart extends Component {
             barcode: "",
             search: "",
             customer_id: "",
+            type_payment: "",
             sales_type: "retail",
+            showDueDate : false,
+            showModal: false,
             options: []
         };
 
@@ -26,6 +30,11 @@ class Cart extends Component {
         this.handleEmptyCart = this.handleEmptyCart.bind(this);
 
         this.handleOnSalesTypeChange = this.handleOnSalesTypeChange.bind(this);
+
+        this.handleOptionPay = this.handleOptionPay.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.handleShow = this.handleShow.bind(this);
+        this.handleGroceryPayment = this.handleGroceryPayment.bind(this);
 
         this.loadProducts = this.loadProducts.bind(this);
         this.loadProductsSelect = this.loadProductsSelect.bind(this);
@@ -124,7 +133,20 @@ class Cart extends Component {
         this.setState({ cart: [] });
     }
     handleChangeSearch(event) {
-        this.loadProducts(event.label);
+        console.log(event.target.value);
+
+        this.setState({ search: event.target.value });
+
+        // saerch from product state
+        const products = this.state.products.filter((p) => {
+            return p.name.toLowerCase().includes(event.target.value.toLowerCase());
+        })
+
+        if (products.length === 0) {
+            this.loadProducts();
+        } else {
+            this.setState({ products });
+        }
     }
     handleSeach(event) {
         if (event.keyCode === 13) {
@@ -172,35 +194,52 @@ class Cart extends Component {
     setCustomerId(event) {
         this.setState({ customer_id: event.target.value });
     }
+
+    handleOptionPay(event) {
+        if (event.target.value == "due_date") {
+            this.setState({ showDueDate: true });
+        }
+        if(event.target.value == "cash") {
+            this.setState({ showDueDate: false });
+        }
+        this.setState({ type_payment: event.target.value });
+    }
+
+    handleClose() {
+        this.setState({ showModal: false });
+    }
+
+    handleShow() {
+        this.setState({ showModal: true });
+    }
+
+    handleGroceryPayment = async (e) => {
+        e.preventDefault();
+        var type_payment = this.state.type_payment ?? "cash"
+        var amount = this.getTotal(this.state.cart)
+        var due_date = document.getElementById("due_date").value
+
+        return await axios
+        .post("/admin/orders", {
+            customer_id: this.state.customer_id,
+            amount: amount,
+            due_date: due_date ?? null,
+            cart: this.state.cart
+        })
+        .then((res) => {
+            localStorage.removeItem("cart");
+            this.loadCart();
+            this.setState({ showModal: false });
+            return res.data;
+        })
+        .catch((err) => {
+            Swal.showValidationMessage(err.response.data.message);
+        });
+    }
+
     handleClickSubmit() {
         if (this.state.sales_type == "grocery") {
-            Swal.fire({
-                title: 'Confirm Sale',
-                html:
-                    '<input id="swal-input1" ' + 'value="' + this.getTotal(this.state.cart) + '"' + ' placeholder="Amount" class="swal2-input">' +
-                    '<input id="swal-input2" placeholder="Jatuh Tempo (hari)" class="swal2-input">',
-                focusConfirm: false,
-                preConfirm: async () => {
-                    var due_date = document.getElementById('swal-input2').value;
-
-                    return await axios
-                        .post("/admin/orders", {
-                            customer_id: this.state.customer_id,
-                            amount: document.getElementById('swal-input1').value,
-                            due_date: due_date,
-                            cart: this.state.cart
-                        })
-                        .then((res) => {
-                            localStorage.removeItem("cart");
-                            this.loadCart();
-                            return res.data;
-                        })
-                        .catch((err) => {
-                            Swal.showValidationMessage(err.response.data.message);
-                        });
-                },
-                allowOutsideClick: () => !Swal.isLoading(),
-            });
+            this.handleShow();
         } else if (this.state.sales_type == "retail") {
             Swal.fire({
                 title: "Received Amount",
@@ -237,181 +276,225 @@ class Cart extends Component {
     render() {
         const { cart, products, customers, barcode } = this.state;
         return (
-            <div className="conatiner">
-                <div className="row">
-                    <div className="col-md-6 col-lg-5">
-                        <div className="row mb-2">
-                            <div className="col-md-6 pr-0">
-                                <form onSubmit={this.handleScanBarcode}>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="Scan Barcode..."
-                                        value={barcode}
-                                        onChange={this.handleOnChangeBarcode}
-                                    />
-                                </form>
-                            </div>
-                            <div className="col-md-6">
-                                <select
-                                    className="form-control"
-                                    onChange={this.handleOnSalesTypeChange}
-                                >
-                                    <option value="">Jenis Penjualan</option>
-                                    <option value="retail">Eceran</option>
-                                    <option value="grocery">Glosir</option>
+            <>
+                <Modal aria-labelledby="contained-modal-title-vcenter" centered show={this.state.showModal} onHide={this.handleClose}>
+                    <Modal.Header>
+                        <Modal.Title>Modal heading</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <form onSubmit={this.handleGroceryPayment}>
+                            <div className="form-group">
+                                <select className="form-control" onChange={this.handleOptionPay}>
+                                    <option>Pilih Pembayaran</option>
+                                    <option value="cash">Pembayaran Cash</option>
+                                    <option value="due_date">Pembayaran Jatuh Tempo</option>
                                 </select>
                             </div>
-                        </div>
-                        <div className="user-cart">
-                            <div className="card overflow-auto">
-                                <table className="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Product Name</th>
-                                            <th>Quantity</th>
-                                            <th>UoM</th>
-                                            <th className="text-right">Price</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {cart.map((c) => (
-                                            <tr key={c.id}>
-                                                <td>{c.name}</td>
-                                                <td style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap: "3px"
-                                                }}>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control form-control-sm qty"
-                                                        value={c.pivot.quantity}
-                                                        onChange={(event) =>
-                                                            this.handleChangeQty(
-                                                                c.id,
-                                                                event.target.value
-                                                            )
-                                                        }
-                                                    />
-                                                    <i
-                                                        className="fas fa-minus-circle text-danger"
-                                                        role="button"
-                                                        onClick={(event) =>
-                                                            this.handleChangeQty(
-                                                                c.id,
-                                                                c.pivot.quantity - 1
-                                                            )
-                                                        }
-                                                    ></i>
-                                                    <i
-                                                        className="fas fa-plus-circle text-success"
-                                                        role="button"
-                                                        onClick={(event) =>
-                                                            this.handleChangeQty(
-                                                                c.id,
-                                                                c.pivot.quantity + 1
-                                                            )
-                                                        }
-                                                    ></i>
-                                                </td>
-                                                <td>{c.uom}</td>
-                                                <td className="text-right">
-                                                    {window.APP.currency_symbol}{" "}
-                                                    {format_rupiah((c.price * c.pivot.quantity).toString())}
-                                                </td>
-                                                <td>
-                                                    <i
-                                                        className="fas fa-trash text-danger"
-                                                        role="button"
-                                                        onClick={(event) =>
-                                                            this.handleClickDelete(
-                                                                c.id
-                                                            )
-                                                        }
-                                                    ></i>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                            <div className="form-group">
+                                <label htmlFor="amount">Amount</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="amount"
+                                    name="amount"
+                                    value={this.getTotal(cart)}
+                                />
                             </div>
-                        </div>
+                            <div className={`form-group ${this.state.showDueDate ? '' : 'd-none'} group-duedate`}>
+                                <label htmlFor="due_date">Due Date</label>
+                                <input
+                                    type="number"
+                                    placeholder="30 Hari"
+                                    className="form-control"
+                                    id="due_date"
+                                    name="due_date"
+                                />
+                            </div>
 
-                        <div className="row">
-                            <div className="col">Total:</div>
-                            <div className="col text-right">
-                                {window.APP.currency_symbol} {format_rupiah(this.getTotal(cart).toString())}
-                            </div>
-                        </div>
-                        <div className="row pb-3">
-                            <div className="col">
-                                <button
-                                    type="button"
-                                    className="btn btn-danger btn-block"
-                                    onClick={this.handleEmptyCart}
-                                    disabled={!cart.length}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                            <div className="col">
-                                <button
-                                    type="button"
-                                    className="btn btn-primary btn-block"
-                                    disabled={!cart.length}
-                                    onClick={this.handleClickSubmit}
-                                >
-                                    Submit
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-6 col-lg-7">
-                        <div className="mb-2">
-                            {/* <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search Product..."
-                                onInput={this.handleChangeSearch}
-                                onChange={this.handleChangeSearch}
-                                onKeyDown={this.handleSeach}
-                            /> */}
-                            <Select options={this.state.options} 
-                                onChange={this.handleChangeSearch}
-                            />
-                        </div>
-                        <div className="row">
-                            {products.map((p) => (
-                                <div className="col-md-4 mt-3" key={p.id} role="button">
-                                    <div
-                                        onClick={() => this.addProductToCart(p.barcode)}
-                                        className="card h-100"
+                            <button type="submit" className="btn btn-primary">
+                                Submit
+                            </button>
+
+                        </form>
+                    </Modal.Body>
+                </Modal>
+                <div className="conatiner">
+                    <div className="row">
+                        <div className="col-md-6 col-lg-5">
+                            <div className="row mb-2">
+                                <div className="col-md-6 pr-0">
+                                    <form onSubmit={this.handleScanBarcode}>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Scan Barcode..."
+                                            value={barcode}
+                                            onChange={this.handleOnChangeBarcode}
+                                        />
+                                    </form>
+                                </div>
+                                <div className="col-md-6">
+                                    <select
+                                        className="form-control"
+                                        onChange={this.handleOnSalesTypeChange}
                                     >
-                                        <div className="card-body bg-hovered">
-                                            <h5
-                                                style={
-                                                    window.APP.warning_quantity > p.quantity
-                                                        ? { color: "red" }
-                                                        : {}
-                                                }
-                                            >
-                                                <strong>
-                                                    {p.name}
-                                                </strong>
-                                                <p className="text-muted mt-2">
-                                                    Stock : {p.quantity}
-                                                </p>
-                                            </h5>
+                                        <option value="">Jenis Penjualan</option>
+                                        <option value="retail">Eceran</option>
+                                        <option value="grocery">Glosir</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="user-cart">
+                                <div className="card overflow-auto">
+                                    <table className="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Product Name</th>
+                                                <th>Quantity</th>
+                                                <th>UoM</th>
+                                                <th className="text-right">Price</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {cart.map((c) => (
+                                                <tr key={c.id}>
+                                                    <td>{c.name}</td>
+                                                    <td style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        gap: "3px"
+                                                    }}>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control form-control-sm qty"
+                                                            value={c.pivot.quantity}
+                                                            onChange={(event) =>
+                                                                this.handleChangeQty(
+                                                                    c.id,
+                                                                    event.target.value
+                                                                )
+                                                            }
+                                                        />
+                                                        <i
+                                                            className="fas fa-minus-circle text-danger"
+                                                            role="button"
+                                                            onClick={(event) =>
+                                                                this.handleChangeQty(
+                                                                    c.id,
+                                                                    c.pivot.quantity - 1
+                                                                )
+                                                            }
+                                                        ></i>
+                                                        <i
+                                                            className="fas fa-plus-circle text-success"
+                                                            role="button"
+                                                            onClick={(event) =>
+                                                                this.handleChangeQty(
+                                                                    c.id,
+                                                                    c.pivot.quantity + 1
+                                                                )
+                                                            }
+                                                        ></i>
+                                                    </td>
+                                                    <td>{c.uom}</td>
+                                                    <td className="text-right">
+                                                        {window.APP.currency_symbol}{" "}
+                                                        {format_rupiah((c.price * c.pivot.quantity).toString())}
+                                                    </td>
+                                                    <td>
+                                                        <i
+                                                            className="fas fa-trash text-danger"
+                                                            role="button"
+                                                            onClick={(event) =>
+                                                                this.handleClickDelete(
+                                                                    c.id
+                                                                )
+                                                            }
+                                                        ></i>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col">Total:</div>
+                                <div className="col text-right">
+                                    {window.APP.currency_symbol} {format_rupiah(this.getTotal(cart).toString())}
+                                </div>
+                            </div>
+                            <div className="row pb-3">
+                                <div className="col">
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger btn-block"
+                                        onClick={this.handleEmptyCart}
+                                        disabled={!cart.length}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                                <div className="col">
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary btn-block"
+                                        disabled={!cart.length}
+                                        onClick={this.handleClickSubmit}
+                                    >
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-6 col-lg-7">
+                            <div className="mb-2">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search Product..."
+                                    value={this.state.search}
+                                    onChange={this.handleChangeSearch}
+                                />
+                                {/* <Select options={this.state.options} 
+                                onChange={this.handleChangeSearch}
+                            /> */}
+                                {/* <Search /> */}
+                            </div>
+                            <div className="row">
+                                {products.map((p) => (
+                                    <div className="col-md-4 mt-3" key={p.id} role="button">
+                                        <div
+                                            onClick={() => this.addProductToCart(p.barcode)}
+                                            className="card h-100"
+                                        >
+                                            <div className="card-body bg-hovered">
+                                                <h5
+                                                    style={
+                                                        window.APP.warning_quantity > p.quantity
+                                                            ? { color: "red" }
+                                                            : {}
+                                                    }
+                                                >
+                                                    <strong>
+                                                        {p.name}
+                                                    </strong>
+                                                    <p className="text-muted mt-2">
+                                                        Stock : {p.quantity}
+                                                    </p>
+                                                </h5>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </>
+
         );
     }
 }

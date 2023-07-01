@@ -24,7 +24,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-header">Dashboard</li>
                 <li class="nav-item has-treeview">
-                    <a href="{{route('home')}}" class="nav-link">
+                    <a href="{{route('home')}}" class="nav-link {{ activeSegment('admin', 1) }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Dashboard</p>
                     </a>
