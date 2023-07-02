@@ -28,7 +28,7 @@
 	</span>
 	@enderror
 	</div>
-	
+
 <!--<div class="form-group">
 	<label for="image">Image</label>
 	<div class="custom-file">
@@ -41,7 +41,7 @@
 	</span>
 	@enderror
 	</div>-->
-	
+
 <div class="form-group">
 	<label for="phone">Phone</label>
 	<input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" id="phone" placeholder="Phone" value="{{ old('phone', $supplier->phone) }}">
@@ -51,7 +51,7 @@
 	</span>
 	@enderror
 	</div>
-		
+
 <!--<div class="form-group">
 	<label for="avatar">Avatar</label>
 	<div class="custom-file">
@@ -64,9 +64,9 @@
 	</span>
 	@enderror
 	</div>-->
-	
+
 	<button class="btn btn-primary" type="submit">Update</button>
-	<a href="/admin/suppliers" class="btn btn-danger">Cancle</a>
+	<a href="/admin/suppliers" class="btn btn-danger">Cancel</a>
 
 </form>
 </div>
