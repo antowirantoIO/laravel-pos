@@ -42,7 +42,9 @@
                 <tr>
                     <td>{{$no++}}</td>
                     <td>{{$product->name}}</td>
-                    <td>{!! DNS1D::getBarcodeHTML("$product->barcode",'EAN13',2,100) ?? null !!}
+                    <td>{!! 
+                        '<img src="data:image/png;base64,' . DNS1D::getBarcodePNG($product->barcode, 'EAN13', 2, 100) . '" alt="barcode"   />'
+                    !!}
 						{{$product->barcode}}</td>
                     <td class="text-nowrap">{{ config('settings.currency_symbol') }} {{number_format($product->price)}}</td>
                     <td>{{ config('settings.currency_symbol') }} {{number_format($product->purchase_price)}}</td>

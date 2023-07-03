@@ -56,7 +56,11 @@ class HomeController extends Controller
             }
         }
 
+        $expired_product_list = \App\Models\Product::where('expired_date', '<=', date('Y-m-d', strtotime('+1 days')))->get();
+
         Session::put('expired_product', $expired_product);
+        Session::put('expired_product_list', $expired_product_list);
+        Session::put('expired_product_list_lenght', $expired_product_list->count());
 
         return view('home', [
             'orders_count' => $orders->count(),

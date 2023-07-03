@@ -58,7 +58,7 @@ class ProductController extends Controller
             'description' => $request->description,
             'barcode' => $request->barcode,
             'price' => $request->price,
-            'purchase_price' => $request->purchase_price,
+            'purchase_price' => $request->purchase_price ?? 0,
             'expired_date' => $request->expired_date,
             'quantity' => $request->quantity,
             'status' => $request->status,
@@ -69,6 +69,24 @@ class ProductController extends Controller
             return redirect()->back()->with('error', 'Sorry, there a problem while creating product.');
         }
         return redirect()->route('products.index')->with('success', 'Success, you product have been created.');
+    }
+
+    public function updatePurchasePrice(Request $request){
+        $product = Product::find($request->id);
+        $product->purchase_price = $request->purchase_price;
+        $product->save();
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function updatePurchaseExpiredDate(Request $request){
+        $product = Product::find($request->id);
+        $product->expired_date = $request->expired_date;
+        $product->save();
+        return response()->json([
+            'success' => true
+        ]);
     }
 
     /**

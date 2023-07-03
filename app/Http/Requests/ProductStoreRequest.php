@@ -30,7 +30,7 @@ class ProductStoreRequest extends FormRequest
             'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
             'quantity' => 'required|integer',
             'status' => 'required|boolean',
-
+            'barcode' => 'required|string|max:13|unique:products'
         ];
     }
 }

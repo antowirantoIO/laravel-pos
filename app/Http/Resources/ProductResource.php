@@ -23,6 +23,7 @@ class ProductResource extends JsonResource
             'barcode' => $this->barcode,
             'price' => $this->price,
             'purchase_price' => $this->purchase_price,
+            'expired_date' => $this->expired_date,
             'quantity' => $this->quantity,
             'status' => $this->status,
             'uom' => $this->uom,

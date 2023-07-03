@@ -23,6 +23,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingController::class, 'store'])->name('settings.store');
     Route::get('/purchase_orders', [OrderController::class, 'purchase'])->name('orders.purchase');
+    Route::post('/update-purchase-price', [ProductController::class, 'updatePurchasePrice'])->name('products.updatePurchasePrice');
+    Route::post('/update-expired-date', [ProductController::class, 'updatePurchaseExpiredDate'])->name('products.updatePurchaseExpiredDate');
     Route::resource('products', ProductController::class);
     Route::resource('suppliers', SupplierController::class);
 	Route::resource('customers', CustomerController::class);

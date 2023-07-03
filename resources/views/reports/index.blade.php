@@ -16,7 +16,7 @@
                     <option value="barang_expired">Laporan Barang Akan Expired</option>
                 </select>
                 </div>
-                <div class="pt-4">
+                <div class="pt-4 hiden">
                 <label for="month">Bulan</label>
                 <select name="month" class="form-control select" id="month">
                     @foreach($months as $month)
@@ -26,7 +26,7 @@
                     @endforeach
                 </select>
                 </div>
-                <div class="pt-4">
+                <div class="pt-4 hiden">
                 <label for="year">Tahun</label>
                 <select name="year" class="form-control select" id="year">
                     @foreach($years as $year)
@@ -78,6 +78,11 @@
 
     $("#laporan").change(function(){
         jenis_laporan = $(this).val()
+        if(jenis_laporan == "persediaan_barang" || jenis_laporan == "barang_expired"){
+            $(".hiden").hide()
+        } else {
+            $(".hiden").show()
+        }
         console.log(jenis_laporan)
     })
     $("#month").change(function(){

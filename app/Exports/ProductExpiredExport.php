@@ -16,7 +16,7 @@ class ProductExpiredExport implements FromQuery, WithHeadings, WithMapping
     public function query()
     {
         return Product::query()->where('quantity', '>', 0)->where('status', '=', 1)->where(
-            'expired_date', '<', date('Y-m-d', strtotime('+1 month'))
+            'expired_date', '<', date('Y-m-d', strtotime('+15 days'))
         );
     }
 

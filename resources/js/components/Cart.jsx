@@ -101,21 +101,22 @@ class Cart extends Component {
         }
     }
     handleChangeQty(product_id, qty) {
-        if (qty < 1) {
+        if (qty < 1 || qty == 0) {
+            console.log("delete " + product_id);
             this.handleClickDelete(product_id);
-        };
-
-        const cart = this.state.cart.map((c) => {
-            if (c.id === product_id) {
-                c.pivot.quantity = qty;
-            }
-            return c;
-        });
-
-        this.setState({ cart });
-        if (!qty) return;
-
-        localStorage.setItem("cart", JSON.stringify(cart));
+        } else if(qty > 0) {
+            const cart = this.state.cart.map((c) => {
+                if (c.id === product_id) {
+                    c.pivot.quantity = qty;
+                }
+                return c;
+            });
+    
+            this.setState({ cart });
+            if (!qty) return;
+    
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
     }
 
     getTotal(cart) {
@@ -125,6 +126,8 @@ class Cart extends Component {
     handleClickDelete(product_id) {
         const cart = this.state.cart.filter((c) => c.id !== product_id);
         this.setState({ cart });
+
+        console.log(cart);
 
         localStorage.setItem("cart", JSON.stringify(cart));
     }
@@ -279,7 +282,7 @@ class Cart extends Component {
             <>
                 <Modal aria-labelledby="contained-modal-title-vcenter" centered show={this.state.showModal} onHide={this.handleClose}>
                     <Modal.Header>
-                        <Modal.Title>Modal heading</Modal.Title>
+                        <Modal.Title>Open POS Completed</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <form onSubmit={this.handleGroceryPayment}>
@@ -340,7 +343,7 @@ class Cart extends Component {
                                     >
                                         <option value="">Jenis Penjualan</option>
                                         <option value="retail">Eceran</option>
-                                        <option value="grocery">Glosir</option>
+                                        <option value="grocery">Grosir</option>
                                     </select>
                                 </div>
                             </div>

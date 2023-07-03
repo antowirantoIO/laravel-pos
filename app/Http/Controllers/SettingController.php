@@ -15,6 +15,8 @@ class SettingController extends Controller
     public function store(Request $request)
     {
         $data = $request->except('_token');
+        $data['date_system'] = $data['date_system'] ?? 0;
+        $data['date_system_value'] = $data['date_system'] ? $data['date_system_value'] : null;
         foreach ($data as $key => $value) {
             $setting = Setting::firstOrCreate(['key' => $key]);
             $setting->value = $value;

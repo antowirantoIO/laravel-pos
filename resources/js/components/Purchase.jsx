@@ -26,6 +26,9 @@ class Purchase extends Component {
         this.handleSeach = this.handleSeach.bind(this);
         this.handleClickSubmit = this.handleClickSubmit.bind(this);
 
+        this.handleChangePrice = this.handleChangePrice.bind(this);
+        this.handleChangeExpiredDate = this.handleChangeExpiredDate.bind(this);
+
         this.addProductToCart = this.addProductToCart.bind(this);
 
         this.handleOnSupplierChange = this.handleOnSupplierChange.bind(this);
@@ -79,21 +82,22 @@ class Purchase extends Component {
         this.setState({ cart });
     }
     handleChangeQty(product_id, qty) {
-        if(qty < 1) {
+        if (qty < 1 || qty == 0) {
+            console.log("delete " + product_id);
             this.handleClickDelete(product_id);
-        };
-
-        const cart = this.state.cart.map((c) => {
-            if (c.id === product_id) {
-                c.pivot.quantity = qty;
-            }
-            return c;
-        });
-
-        this.setState({ cart });
-        if (!qty) return;
-
-        localStorage.setItem("cart_purchase", JSON.stringify(cart));
+        } else if(qty > 0) {
+            const cart = this.state.cart.map((c) => {
+                if (c.id === product_id) {
+                    c.pivot.quantity = qty;
+                }
+                return c;
+            });
+    
+            this.setState({ cart });
+            if (!qty) return;
+    
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
     }
 
     getTotal(cart) {
@@ -151,7 +155,7 @@ class Purchase extends Component {
 
     handleClickSubmit() {
         Swal.fire({
-            title: "Confirm Order",
+            title: "Purchase Completed",
             showCancelButton: true,
             confirmButtonText: "Send",
             showLoaderOnConfirm: true,
@@ -179,12 +183,80 @@ class Purchase extends Component {
         });
     }
 
+    // handleChangePrice(id, event) {
+    //     const price = event.target.value;
+    //     console.log(price);
+    // }
+
+    // debounce for handleChangePrice
+    debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    handleChangeExpiredDate = this.debounce((id, event) => {
+        const expired_date = event.target.value;
+        axios
+            .post("/admin/update-expired-date", {
+                id: id,
+                expired_date: expired_date
+            })
+            .then((res) => {
+                this.setState({
+                    cart: this.state.cart.map((p) => {
+                        if (p.id === id) {
+                            p.expired_date = expired_date;
+                        }
+                        return p;
+                    }),
+                    products: this.state.products.map((p) => {
+                        if (p.id === id) {
+                            p.expired_date = expired_date;
+                        }
+                        return p;
+                    })
+                });
+            });
+    }, 600)
+
+    handleChangePrice = this.debounce((id, event) => {
+        const price = event.target.value;
+        axios
+            .post("/admin/update-purchase-price", {
+                id: id,
+                purchase_price: price
+            })
+            .then((res) => {
+                this.setState({
+                    cart: this.state.cart.map((p) => {
+                        if (p.id === id) {
+                            p.purchase_price = price;
+                        }
+                        return p;
+                    }),
+                    products: this.state.products.map((p) => {
+                        if (p.id === id) {
+                            p.purchase_price = price;
+                        }
+                        return p;
+                    })
+                });
+            });
+    }, 400)
+
     render() {
         const { cart, products, suppliers, barcode } = this.state;
         return (
             <div className="conatiner">
                 <div className="row">
-                    <div className="col-md-6 col-lg-5">
+                    <div className="col-md-6 col-lg-6">
                         <div className="row mb-2">
                             <div className="col-md-12">
                                 <Select options={suppliers}
@@ -203,6 +275,7 @@ class Purchase extends Component {
                                             <th>Quantity</th>
                                             <th>UoM</th>
                                             <th className="text-right">Harga Beli</th>
+                                            <th className="text-right">Expired Date</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -248,9 +321,39 @@ class Purchase extends Component {
                                                     ></i>
                                                 </td>
                                                 <td>{c.uom}</td>
-                                                <td className="text-right">
+                                                {/* <td className="text-right">
                                                     {window.APP.currency_symbol}{" "}
                                                     {format_rupiah((c.purchase_price * c.pivot.quantity).toString())}
+                                                </td> */}
+                                                <td className="text-right">
+                                                <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        defaultValue={c.purchase_price * c.pivot.quantity}
+                                                        onChange={(event) => {
+                                                            this.handleChangePrice(
+                                                                c.id,
+                                                                event
+                                                            )
+                                                        }}
+                                                    />
+                                                </td>
+                                                <td className="text-right">
+                                                <input
+                                                        type="date"
+                                                        className="form-control"
+                                                        {
+                                                            ...c.expired_date ? { 
+                                                                defaultValue: new Date(c.expired_date).toISOString().split('T')[0]
+                                                             } : {}
+                                                        }
+                                                        onChange={(event) => {
+                                                            this.handleChangeExpiredDate(
+                                                                c.id,
+                                                                event
+                                                            )
+                                                        }}
+                                                    />
                                                 </td>
                                                 <td>
                                                     <i
@@ -297,7 +400,7 @@ class Purchase extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-6 col-lg-7">
+                    <div className="col-md-6 col-lg-6">
                         <div className="mb-2">
                             <Select options={this.state.options} 
                                 onChange={this.handleChangeSearch}

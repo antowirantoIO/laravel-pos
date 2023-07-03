@@ -38,7 +38,7 @@
                 </span>
                 @enderror
             </div>
-            <div class="form-group">
+            {{-- <div class="form-group">
                 <label for="warning_quantity">Warning quantity</label>
                 <input type="text" name="warning_quantity" class="form-control @error('warning_quantity') is-invalid @enderror" id="warning_quantity" placeholder="Warning quantity" value="{{ old('warning_quantity', config('settings.warning_quantity')) }}">
                 @error('warning_quantity')
@@ -46,9 +46,38 @@
                     <strong>{{ $message }}</strong>
                 </span>
                 @enderror
+            </div> --}}
+            <div class="form-group">
+                <!-- switch -->
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="customSwitch1" value="1" name="date_system" {{ old('date_system', config('settings.date_system')) == 1 ? 'checked' : '' }}>
+                    <label class="custom-control-label" for="customSwitch1">System Date Time</label>
+                </div>
+                <input type="time" {{ config('settings.date_system') != 1 ? 'disabled' : '' }} name="date_system_value" class="form-control mt-3 @error('date_system_value') is-invalid @enderror" id="date_system_value" placeholder="Date Time" value="{{ old('date_system_value', config('settings.date_system_value')) }}">
+
+                @error('date_system')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
             </div>
+
             <button type="submit" class="btn btn-primary">Change Setting</button>
         </form>
     </div>
 </div>
+@endsection
+
+@section('js')
+<script>
+    $(document).ready(function() {
+        $('#customSwitch1').change(function() {
+            if ($(this).prop('checked')) {
+                $('#date_system_value').prop('disabled', false);
+            } else {
+                $('#date_system_value').prop('disabled', true);
+            }
+        });
+    });
+</script>
 @endsection

@@ -19,7 +19,6 @@
 
     <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-
     <script src="https://adminlte.io/themes/v3/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="https://adminlte.io/themes/v3/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://adminlte.io/themes/v3/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -92,25 +91,26 @@
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
-    
+    <script src="
+    https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js
+    "></script>
     <script>
+        var date_system_value = "{{ 
+            config('settings.date_system_value')
+         }}";
+        var date_system = {{ config('settings.date_system') }};
         setInterval(function() {
-                var date = new Date();
-                var hours = date.getHours();
-                var minutes = date.getMinutes();
-                var seconds = date.getSeconds();
-                var ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                hours = hours ? hours : 12;
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-                var strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
-                // get date now
-                var day = date.getDate();
-                var month = date.getMonth() + 1;
-                var year = date.getFullYear();
-                var strDate = day + '-' + month + '-' + year;
+                if(date_system_value == 0){
+                    var date_time = moment().format('dddd, D MMMM YYYY, h:mm:ss a');
+                } else {
+                    const [hours, minutes] = date_system_value.split(':');
 
-                var date_time = strDate + ' ' + strTime;
+                    const currentTime = new Date();
+                    currentTime.setHours(hours);
+                    currentTime.setMinutes(minutes);
+
+                    var date_time = moment(currentTime).format('dddd, D MMMM YYYY, h:mm:ss a');
+                }
                 document.getElementById('date_time').innerHTML = date_time;
             }, 1000);
 
