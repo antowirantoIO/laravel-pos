@@ -20,7 +20,8 @@ class Cart extends Component {
             sales_type: "retail",
             showDueDate : false,
             showModal: false,
-            options: []
+            options: [],
+            productsAutoComplete: []
         };
 
         this.loadCart = this.loadCart.bind(this);
@@ -69,10 +70,18 @@ class Cart extends Component {
         });
     }
 
+    loadProductsAutoComplete(search = "") {
+        const query = !!search ? `?search=${search}` : "";
+        axios.get(`/admin/products${query}`).then((res) => {
+            const productsAutoComplete = res.data.data ?? [];
+            this.setState({ productsAutoComplete });
+        });
+    }
+
     loadProducts(search = "") {
         const query = !!search ? `?search=${search}` : "";
         axios.get(`/admin/products${query}`).then((res) => {
-            const products = res.data.data;
+            const products = res.data.data ?? [];
             this.setState({ products });
         });
     }
@@ -136,19 +145,13 @@ class Cart extends Component {
         this.setState({ cart: [] });
     }
     handleChangeSearch(event) {
-        console.log(event.target.value);
+        if(event.target.value) {
+            this.loadProductsAutoComplete(event.target.value);
+        }else
+            this.setState({ productsAutoComplete: [] });
 
-        this.setState({ search: event.target.value });
-
-        // saerch from product state
-        const products = this.state.products.filter((p) => {
-            return p.name.toLowerCase().includes(event.target.value.toLowerCase());
-        })
-
-        if (products.length === 0) {
-            this.loadProducts();
-        } else {
-            this.setState({ products });
+         if (event.keyCode === 13) {
+            this.loadProducts(event.target.value);
         }
     }
     handleSeach(event) {
@@ -277,7 +280,7 @@ class Cart extends Component {
     }
 
     render() {
-        const { cart, products, customers, barcode } = this.state;
+        const { cart, products, customers, barcode, productsAutoComplete } = this.state;
         return (
             <>
                 <Modal aria-labelledby="contained-modal-title-vcenter" centered show={this.state.showModal} onHide={this.handleClose}>
@@ -453,18 +456,31 @@ class Cart extends Component {
                             </div>
                         </div>
                         <div className="col-md-6 col-lg-7">
-                            <div className="mb-2">
+                            <div className="mb-2 position-relative">
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Search Product..."
-                                    value={this.state.search}
+                                    placeholder="Search Product"
+                                    onKeyDown={this.handleChangeSearch}
                                     onChange={this.handleChangeSearch}
                                 />
-                                {/* <Select options={this.state.options} 
-                                onChange={this.handleChangeSearch}
-                            /> */}
-                                {/* <Search /> */}
+                                {productsAutoComplete && (
+                                    <div className="bg-white w-100 shadow" style={{position: 'absolute', zIndex: '999999'}}>
+                                        <div className="">
+                                            {productsAutoComplete.map((item, index) => (
+                                                <div
+                                                onClick={() => {
+                                                    this.addProductToCart(item.barcode)
+                                                    this.setState({ productsAutoComplete: null });
+                                                }}
+                                                key={index} className="px-3 pt-3 hover-bg-list border-bottom" style={{cursor: 'pointer'}}>
+                                                    <div style={{fontWeight: 'bold', fontSize: '18px'}}>{item.name}</div>
+                                                    <p>Stok : {item.quantity}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                             <div className="row">
                                 {products.map((p) => (

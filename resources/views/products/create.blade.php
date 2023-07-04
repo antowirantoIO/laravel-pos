@@ -121,7 +121,7 @@
             </div>
 
             <button class="btn btn-primary" type="submit">Create</button>
-            <a href="/admin/products" class="btn btn-danger">Cancle</a>
+            <a href="/admin/products" class="btn btn-danger">Cancel</a>
         </form>
     </div>
 </div>

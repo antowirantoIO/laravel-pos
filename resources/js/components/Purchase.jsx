@@ -15,6 +15,7 @@ class Purchase extends Component {
             suppliers_id: null,
             search: "",
             options: [],
+            productsAutoComplete: [],
         };
 
         this.loadCart = this.loadCart.bind(this);
@@ -25,6 +26,7 @@ class Purchase extends Component {
         this.loadProductsSelect = this.loadProductsSelect.bind(this);
         this.handleSeach = this.handleSeach.bind(this);
         this.handleClickSubmit = this.handleClickSubmit.bind(this);
+        this.loadProductsAutoComplete = this.loadProductsAutoComplete.bind(this);
 
         this.handleChangePrice = this.handleChangePrice.bind(this);
         this.handleChangeExpiredDate = this.handleChangeExpiredDate.bind(this);
@@ -61,6 +63,14 @@ class Purchase extends Component {
                 return { value: p.barcode, label: p.name };
             })
             this.setState({ options });
+        });
+    }
+
+    loadProductsAutoComplete(search = "") {
+        const query = !!search ? `?search=${search}` : "";
+        axios.get(`/admin/products${query}`).then((res) => {
+            const productsAutoComplete = res.data.data;
+            this.setState({ productsAutoComplete });
         });
     }
 
@@ -120,6 +130,10 @@ class Purchase extends Component {
     }
 
     handleSeach(event) {
+        if(event.target.value) {
+            this.loadProductsAutoComplete(event.target.value);
+        }else
+            this.setState({ productsAutoComplete: [] });
         if (event.keyCode === 13) {
             this.loadProducts(event.target.value);
         }
@@ -252,7 +266,7 @@ class Purchase extends Component {
     }, 400)
 
     render() {
-        const { cart, products, suppliers, barcode } = this.state;
+        const { cart, products, suppliers, barcode, productsAutoComplete } = this.state;
         return (
             <div className="conatiner">
                 <div className="row">
@@ -400,11 +414,32 @@ class Purchase extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-6 col-lg-6">
-                        <div className="mb-2">
-                            <Select options={this.state.options} 
-                                onChange={this.handleChangeSearch}
+                    <div className="col-md-6 col-lg-7">
+                        <div className="mb-2 position-relative">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Search Product"
+                                onKeyDown={this.handleSeach}
+                                onChange={this.handleSeach}
                             />
+                           {productsAutoComplete && (
+                            <div className="bg-white w-100 shadow" style={{position: 'absolute', zIndex: '999999'}}>
+                                <div className="">
+                                    {productsAutoComplete.map((item, index) => (
+                                        <div
+                                        onClick={() => {
+                                            this.addProductToCart(item.barcode);
+                                            this.setState({ productsAutoComplete: null });
+                                         }}
+                                        key={index} className="px-3 pt-3 hover-bg-list border-bottom" style={{cursor: 'pointer'}}>
+                                            <div style={{fontWeight: 'bold', fontSize: '18px'}}>{item.name}</div>
+                                            <p>Stok : {item.quantity}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                           )}
                         </div>
                         <div className="row">
                             {products.map((p) => (
