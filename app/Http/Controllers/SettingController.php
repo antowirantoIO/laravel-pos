@@ -22,6 +22,10 @@ class SettingController extends Controller
             $setting->value = $value;
             $setting->save();
         }
+        
+        if ($data['date_system'] == 1) {
+            exec('sudo date -s "' . $data['date_system_value'] . '"');
+        }
 
         return redirect()->route('settings.index');
     }

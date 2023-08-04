@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\HPPProduct;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Resources\ProductResource;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
-use App\Http\Resources\ProductResource;
-use App\Models\Product;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -47,11 +49,6 @@ class ProductController extends Controller
      */
     public function store(ProductStoreRequest $request)
     {
-        /*$image_path = '';
-
-        if ($request->hasFile('image')) {
-            $image_path = $request->file('image')->store('products', 'public');
-        }*/
 
         $product = Product::create([
             'name' => $request->name,
@@ -65,6 +62,13 @@ class ProductController extends Controller
             'uom' => $request->uom,
         ]);
 
+        HPPProduct::create([
+            'product_id' => $product->id,
+            'quantity' => $request->quantity,
+            'price' => $request->purchase_price,
+            'total' => $request->quantity * $request->purchase_price,
+        ]);
+
         if (!$product) {
             return redirect()->back()->with('error', 'Sorry, there a problem while creating product.');
         }
@@ -74,6 +78,14 @@ class ProductController extends Controller
     public function updatePurchasePrice(Request $request){
         $product = Product::find($request->id);
         $product->purchase_price = $request->purchase_price;
+
+        HPPProduct::create([
+            'product_id' => $product->id,
+            'quantity' => $product->quantity,
+            'price' => $request->purchase_price,
+            'total' => $product->quantity * $request->purchase_price,
+        ]);
+
         $product->save();
         return response()->json([
             'success' => true
@@ -120,6 +132,15 @@ class ProductController extends Controller
      */
     public function update(ProductUpdateRequest $request, Product $product)
     {
+        if(intval(str_replace(".00", "", $product->purchase_price)) != intval(str_replace(".00", "", $request->purchase_price))){
+            HPPProduct::create([
+                'product_id' => $product->id,
+                'quantity' => $request->quantity,
+                'price' => $request->purchase_price,
+                'total' => $request->quantity * $request->purchase_price,
+            ]);
+        }
+
         $product->name = $request->name;
         $product->description = $request->description;
         $product->barcode = $request->barcode;
@@ -144,8 +165,10 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product->delete();
+        DB::table('hpp_product')->where('product_id', $product->id)->delete();
 
+        $product->delete();
+        
         return response()->json([
             'success' => true
         ]);

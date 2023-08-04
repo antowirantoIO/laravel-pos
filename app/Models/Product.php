@@ -48,5 +48,15 @@ class Product extends Model
         'kantong' => 'Kantong',
         'karung' => 'Karung',
     ];
+
+    public function hpp()
+    {
+        return $this->hasMany(HPPProduct::class)->orderBy('created_at', 'ASC');
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
     
 }

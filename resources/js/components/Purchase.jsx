@@ -111,7 +111,7 @@ class Purchase extends Component {
     }
 
     getTotal(cart) {
-        const total = cart.map((c) => c.pivot.quantity * c.purchase_price);
+        const total = cart.map((c) => c.pivot?.quantity * c.purchase_price);
         return sum(total);
     }
     handleClickDelete(product_id) {
@@ -270,7 +270,7 @@ class Purchase extends Component {
         return (
             <div className="conatiner">
                 <div className="row">
-                    <div className="col-md-6 col-lg-6">
+                    <div className="col-md-6">
                         <div className="row mb-2">
                             <div className="col-md-12">
                                 <Select options={suppliers}
@@ -305,7 +305,7 @@ class Purchase extends Component {
                                                     <input
                                                         type="text"
                                                         className="form-control form-control-sm qty"
-                                                        value={c.pivot.quantity}
+                                                        value={c.pivot?.quantity}
                                                         onChange={(event) =>
                                                             this.handleChangeQty(
                                                                 c.id,
@@ -335,15 +335,11 @@ class Purchase extends Component {
                                                     ></i>
                                                 </td>
                                                 <td>{c.uom}</td>
-                                                {/* <td className="text-right">
-                                                    {window.APP.currency_symbol}{" "}
-                                                    {format_rupiah((c.purchase_price * c.pivot.quantity).toString())}
-                                                </td> */}
                                                 <td className="text-right">
                                                 <input
                                                         type="text"
                                                         className="form-control"
-                                                        defaultValue={c.purchase_price * c.pivot.quantity}
+                                                        defaultValue={c.purchase_price * c.pivot?.quantity}
                                                         onChange={(event) => {
                                                             this.handleChangePrice(
                                                                 c.id,
@@ -414,7 +410,7 @@ class Purchase extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-6 col-lg-7">
+                    <div className="col-md-6">
                         <div className="mb-2 position-relative">
                             <input
                                 type="text"

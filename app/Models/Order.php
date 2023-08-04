@@ -67,6 +67,16 @@ class Order extends Model
         })->sum();
     }
 
+    public function isPaid()
+    {
+        return $this->total() == $this->receivedAmount() && $this->total() > 0;
+    }
+
+    public function isPartialPaid()
+    {
+        return $this->receivedAmount() > 0 && $this->receivedAmount() < $this->total();
+    }
+
     public function formattedReceivedAmount()
     {
         return number_format($this->receivedAmount(), 2);

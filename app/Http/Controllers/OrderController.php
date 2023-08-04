@@ -21,7 +21,7 @@ class OrderController extends Controller
             $orders = $orders->where('created_at', '<=', $request->end_date . ' 23:59:59');
         }
         $orders = $orders->where('supplier_id', '=', null)->with(['items', 'payments', 'customer'])->latest()->get();
-        
+
         $total = $orders->map(function($i) {
             return $i->total();
         })->sum();

@@ -47,6 +47,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::get('/reports', [App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
     Route::get('/reports/download', [App\Http\Controllers\ReportsController::class, 'download'])->name('reports.download');
+    Route::get('/reports/labakotor', [App\Http\Controllers\ReportsController::class, 'hitungLabaKotor'])->name('reports.hitungLabaKotor');
 });
 
 Route::get('suppliers/json', function() {
