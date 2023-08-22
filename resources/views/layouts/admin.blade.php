@@ -90,27 +90,51 @@
         </aside>
         <!-- /.control-sidebar -->
     </div>
+    <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{{ route('uom.store') }}" method="POST" id="form">
+
+      <div class="modal-body">
+            @csrf
+            <div class="form-group">
+                <label for="name">UOM Name</label>
+                <input type="text" name="name" id="name" class="form-control" placeholder="UOM Name">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+
+      </div>
+      </form>
+
+    </div>
+  </div>
+</div>
     <!-- ./wrapper -->
     <script src="
     https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js
     "></script>
     <script>
         var date_system_value = "{{ 
-            config('settings.date_system_value')
+            dateformat_custom()
          }}";
         var date_system = {{ config('settings.date_system') }};
         setInterval(function() {
-                if(date_system_value == 0){
-                    var date_time = moment().format('dddd, D MMMM YYYY, h:mm:ss a');
-                } else {
-                    const [hours, minutes] = date_system_value.split(':');
-
-                    const currentTime = new Date();
-                    currentTime.setHours(hours);
-                    currentTime.setMinutes(minutes);
+                // if(date_system_value == 0){
+                    // var date_time = moment().format('dddd, D MMMM YYYY, h:mm:ss a');
+                // } else {
+                    const currentTime = new Date(date_system_value);
 
                     var date_time = moment(currentTime).format('dddd, D MMMM YYYY, h:mm:ss a');
-                }
+                // }
                 document.getElementById('date_time').innerHTML = date_time;
             }, 1000);
 

@@ -44,6 +44,7 @@
                     <th>Status</th>
                     <th>To Pay</th>
                     <th>Created At</th>
+                    <th>Due Date</th>
 					<th>Actions</th>
                 </tr>
             </thead>
@@ -70,6 +71,14 @@
                     <td>{{
                         // format to 10 Juni 2022
                         $order->created_at->isoFormat('D MMMM Y')
+                    }}</td>
+                    @php
+                    if($order->receivedAmount() == $order->total() || $order->due_day == null){
+                        $order->due_day = null;
+                    }
+                    @endphp
+                    <td>{{
+                        $order->due_day != null ? date('d M Y', strtotime($order->due_day)) : '-'
                     }}</td>
 					<td>
 					<a href="{{ route('orders.show', $order) }}" class="btn btn-primary"><i class="fas fa-eye"></i></a>

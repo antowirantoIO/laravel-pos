@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
+use App\Models\HPPProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\OrderStoreRequest;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -56,11 +58,14 @@ class OrderController extends Controller
 
     public function store(OrderStoreRequest $request)
     {
-        $due_day = date('Y-m-d', strtotime('+' . $request->due_date . ' days'));
+        $datetime = Carbon::createFromFormat('Y-m-d H:i:s', dateformat_custom());
+        $due_day = $datetime->addDays($request->due_date)->format('Y-m-d H:i:s');
         $order = Order::create([
             'user_id' => $request->user()->id,
             'supplier_id' => $request->supplier_id ?? null,
             'due_day' =>  $due_day ?? null,
+            'created_at' => dateformat_custom(),
+            'updated_at' => dateformat_custom(),
         ]);
 
         if($request->supplier_id != null){
@@ -74,12 +79,31 @@ class OrderController extends Controller
                     'price' => $item["purchase_price"] * $item["pivot"]["quantity"],
                     'quantity' => $item["pivot"]["quantity"],
                     'product_id' => $item["id"],
+                    'created_at' => dateformat_custom(),
+                    'updated_at' => dateformat_custom(),
                 ]);
                 
                 $sum += $item["purchase_price"] * $item["pivot"]["quantity"];
-
                 $product = Product::find($item["id"]);
+
+                $hpp = HPPProduct::where('product_id', $item["id"])->where('bulan', date('m', strtotime(dateformat_custom())))->where('tahun', date('Y', strtotime(dateformat_custom())))->first();
+
+                $hppValue = $hpp->hpp;
+                $productQuantity = $product->quantity;
+                $itemPurchasePrice = $item['purchase_price'];
+                $itemPivotQuantity = $item['pivot']['quantity'];
+                
+                $itemHPP = ($hppValue * $productQuantity) + ($itemPurchasePrice * ($itemPivotQuantity));
+                $itemQTY = $productQuantity + $itemPivotQuantity;
+
+                $calculate = $itemHPP / $itemQTY;
+
+                $hpp->hpp = $calculate;
+                $hpp->save();
+
                 $product->quantity = $product->quantity + $item["pivot"]["quantity"];
+                $product->purchase_price = $item["purchase_price"];
+                $product->expired_date = $item["expired_date"];
                 $product->save();
             }
 
@@ -87,6 +111,8 @@ class OrderController extends Controller
                 'amount' => $sum,
                 'supplier_id' => $request->supplier_id ?? null,
                 'user_id' => $request->user()->id,
+                'created_at' => dateformat_custom(),
+                'updated_at' => dateformat_custom(),
             ]);
 
             return 'success';
@@ -99,6 +125,8 @@ class OrderController extends Controller
                 'price' => $item["price"] * $item["pivot"]["quantity"],
                 'quantity' => $item["pivot"]["quantity"],
                 'product_id' => $item["id"],
+                'created_at' => dateformat_custom(),
+                'updated_at' => dateformat_custom(),
             ]);
 
             $product = Product::find($item["id"]);
@@ -110,6 +138,8 @@ class OrderController extends Controller
             $order->payments()->create([
                 'amount' => $request->amount,
                 'user_id' => $request->user()->id,
+                'created_at' => dateformat_custom(),
+                'updated_at' => dateformat_custom(),
             ]);
         }
         return 'success';

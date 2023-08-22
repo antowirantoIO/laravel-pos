@@ -15,7 +15,7 @@
 <div class="card-header bg-white">
         <div class="d-flex justify-content-between">
         <div>
-        <form action="{{route('orders.index')}}">
+        <form action="{{route('orders.purchase')}}">
             <div class="d-flex" style="gap: 10px;">
                 <div>
                     <input type="date" name="start_date" class="form-control" value="{{request('start_date')}}" />
@@ -81,7 +81,7 @@
                 <tr>
                     <th></th>
                     <th></th>
-                    <th>{{ config('settings.currency_symbol') }} {{ number_format($receivedAmount, 2) }}</th>
+                    <th>{{ config('settings.currency_symbol') }} {{ number_format($total, 2) }}</th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -95,7 +95,7 @@
 @section('js')
 <script>
     var table = $('.table-datatable').DataTable({
-        "order": [[ 5, "desc" ]]
+        
     });
 </script>
 @endsection

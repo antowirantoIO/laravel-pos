@@ -23,7 +23,7 @@
                 <tr>
                     <td>{{$order->id}}</td>
                     <td>{{$order->product->name}}</td>
-                    <td>{{$order->product->uom}}</td>
+                    <td>{{$order->product->uom_prod->name}}</td>
 					<td>{{$order->quantity}}</td>
 					<td>{{ config('settings.currency_symbol') }} {{ number_format($order->product->purchase_price, 0)}}</td>
 					<td>{{ config('settings.currency_symbol') }} {{ number_format($order->product->purchase_price * $order->quantity, 0) }}</td>

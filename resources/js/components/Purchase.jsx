@@ -59,7 +59,9 @@ class Purchase extends Component {
     loadProductsSelect() {
         axios.get(`/admin/products`).then((res) => {
             const products = res.data.data;
-            const options = products.map((p) => {
+            const prod = products.filter((p) => p.status == "1");
+            console.log(prod);
+            const options = prod.map((p) => {
                 return { value: p.barcode, label: p.name };
             })
             this.setState({ options });
@@ -77,7 +79,19 @@ class Purchase extends Component {
     loadProducts(search = "") {
         const query = !!search ? `?search=${search}` : "";
         axios.get(`/admin/products${query}`).then((res) => {
-            const products = res.data.data;
+            const prod = res.data.data;
+            const products = prod.filter((p) => p.status == "1");
+            products.sort((a, b) => {
+                if (a.name < b.name) {
+                    return -1;
+                }
+
+                if (a.name > b.name) {
+                    return 1;
+                }
+
+                return 0;
+            });
             this.setState({ products });
         });
     }
@@ -141,6 +155,8 @@ class Purchase extends Component {
 
     addProductToCart(barcode) {
         let product = this.state.products.find((p) => p.barcode === barcode);
+
+        console.log(product);
 
         if (!!product) {
             // if product is already in cart
@@ -217,52 +233,80 @@ class Purchase extends Component {
 
     handleChangeExpiredDate = this.debounce((id, event) => {
         const expired_date = event.target.value;
-        axios
-            .post("/admin/update-expired-date", {
-                id: id,
-                expired_date: expired_date
+        // axios
+        //     .post("/admin/update-expired-date", {
+        //         id: id,
+        //         expired_date: expired_date
+        //     })
+        //     .then((res) => {
+        //         this.setState({
+        //             cart: this.state.cart.map((p) => {
+        //                 if (p.id === id) {
+        //                     p.expired_date = expired_date;
+        //                 }
+        //                 return p;
+        //             }),
+        //             products: this.state.products.map((p) => {
+        //                 if (p.id === id) {
+        //                     p.expired_date = expired_date;
+        //                 }
+        //                 return p;
+        //             })
+        //         });
+        //     });
+        this.setState({
+            cart: this.state.cart.map((p) => {
+                if (p.id === id) {
+                    p.expired_date = expired_date;
+                }
+                return p;
+            }),
+            products: this.state.products.map((p) => {
+                if (p.id === id) {
+                    p.expired_date = expired_date;
+                }
+                return p;
             })
-            .then((res) => {
-                this.setState({
-                    cart: this.state.cart.map((p) => {
-                        if (p.id === id) {
-                            p.expired_date = expired_date;
-                        }
-                        return p;
-                    }),
-                    products: this.state.products.map((p) => {
-                        if (p.id === id) {
-                            p.expired_date = expired_date;
-                        }
-                        return p;
-                    })
-                });
-            });
-    }, 600)
+        });
+    }, 400)
 
     handleChangePrice = this.debounce((id, event) => {
         const price = event.target.value;
-        axios
-            .post("/admin/update-purchase-price", {
-                id: id,
-                purchase_price: price
+        // axios
+        //     .post("/admin/update-purchase-price", {
+        //         id: id,
+        //         purchase_price: price
+        //     })
+        //     .then((res) => {
+        //         this.setState({
+        //             cart: this.state.cart.map((p) => {
+        //                 if (p.id === id) {
+        //                     p.purchase_price = price;
+        //                 }
+        //                 return p;
+        //             }),
+        //             products: this.state.products.map((p) => {
+        //                 if (p.id === id) {
+        //                     p.purchase_price = price;
+        //                 }
+        //                 return p;
+        //             })
+        //         });`
+        //     });
+        this.setState({
+            cart: this.state.cart.map((p) => {
+                if (p.id === id) {
+                    p.purchase_price = price;
+                }
+                return p;
+            }),
+            products: this.state.products.map((p) => {
+                if (p.id === id) {
+                    p.purchase_price = price;
+                }
+                return p;
             })
-            .then((res) => {
-                this.setState({
-                    cart: this.state.cart.map((p) => {
-                        if (p.id === id) {
-                            p.purchase_price = price;
-                        }
-                        return p;
-                    }),
-                    products: this.state.products.map((p) => {
-                        if (p.id === id) {
-                            p.purchase_price = price;
-                        }
-                        return p;
-                    })
-                });
-            });
+        });
     }, 400)
 
     render() {
@@ -354,8 +398,9 @@ class Purchase extends Component {
                                                         className="form-control"
                                                         {
                                                             ...c.expired_date ? { 
-                                                                defaultValue: new Date(c.expired_date).toISOString().split('T')[0]
+                                                                defaultValue: c.expired_date.split(' ')[0]
                                                              } : {}
+                            
                                                         }
                                                         onChange={(event) => {
                                                             this.handleChangeExpiredDate(

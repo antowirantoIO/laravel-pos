@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\HPPProduct;
+use App\Models\UOM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use Carbon\Carbon;
 
 class ProductController extends Controller
 {
@@ -21,14 +23,21 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $products = new Product();
+
         if ($request->search) {
             $products = $products->where('name', 'LIKE', "%{$request->search}%");
         }
-        $products = $products->latest()->get();
+        
+        $datetime = Carbon::createFromFormat('Y-m-d H:i:s', dateformat_custom());
+        
         if (request()->wantsJson()) {
-            return ProductResource::collection($products);
+            return ProductResource::collection($products->where('expired_date', '>', $datetime) 
+            ->latest()
+            ->get());
         }
-        return view('products.index')->with('products', $products);
+        
+        return view('products.index')->with('products', $products->latest()
+        ->get());
     }
 
     /**
@@ -38,7 +47,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        $uom = UOM::all();
+        return view('products.create', compact('uom'));
     }
 
     /**
@@ -49,7 +59,6 @@ class ProductController extends Controller
      */
     public function store(ProductStoreRequest $request)
     {
-
         $product = Product::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -60,13 +69,15 @@ class ProductController extends Controller
             'quantity' => $request->quantity,
             'status' => $request->status,
             'uom' => $request->uom,
+            'created_at' => dateformat_custom(),
+            'updated_at' => dateformat_custom(),
         ]);
 
         HPPProduct::create([
             'product_id' => $product->id,
-            'quantity' => $request->quantity,
-            'price' => $request->purchase_price,
-            'total' => $request->quantity * $request->purchase_price,
+            'hpp' => $request->purchase_price,
+            'bulan' => date('m', strtotime(dateformat_custom())),
+            'tahun' => date('Y', strtotime(dateformat_custom())),
         ]);
 
         if (!$product) {
@@ -79,12 +90,14 @@ class ProductController extends Controller
         $product = Product::find($request->id);
         $product->purchase_price = $request->purchase_price;
 
-        HPPProduct::create([
-            'product_id' => $product->id,
-            'quantity' => $product->quantity,
-            'price' => $request->purchase_price,
-            'total' => $product->quantity * $request->purchase_price,
-        ]);
+        // HPPProduct::create([
+        //     'product_id' => $product->id,
+        //     'quantity' => $product->quantity,
+        //     'price' => $request->purchase_price,
+        //     'total' => $product->quantity * $request->purchase_price,
+        //     'created_at' => dateformat_custom(),
+        //     'updated_at' => dateformat_custom(),
+        // ]);
 
         $product->save();
         return response()->json([
@@ -120,7 +133,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        return view('products.edit')->with('product', $product);
+        $uom = UOM::all();
+        return view('products.edit', compact('product', 'uom'));
     }
 
     /**
@@ -132,14 +146,16 @@ class ProductController extends Controller
      */
     public function update(ProductUpdateRequest $request, Product $product)
     {
-        if(intval(str_replace(".00", "", $product->purchase_price)) != intval(str_replace(".00", "", $request->purchase_price))){
-            HPPProduct::create([
-                'product_id' => $product->id,
-                'quantity' => $request->quantity,
-                'price' => $request->purchase_price,
-                'total' => $request->quantity * $request->purchase_price,
-            ]);
-        }
+        // if(intval(str_replace(".00", "", $product->purchase_price)) != intval(str_replace(".00", "", $request->purchase_price))){
+        //     HPPProduct::create([
+        //         'product_id' => $product->id,
+        //         'quantity' => $request->quantity,
+        //         'price' => $request->purchase_price,
+        //         'total' => $request->quantity * $request->purchase_price,
+        //         'created_at' => dateformat_custom(),
+        //         'updated_at' => dateformat_custom(),
+        //     ]);
+        // }
 
         $product->name = $request->name;
         $product->description = $request->description;
@@ -150,6 +166,7 @@ class ProductController extends Controller
         $product->quantity = $request->quantity;
         $product->uom = $request->uom;
         $product->status = $request->status;
+        $product->updated_at = dateformat_custom();
 
         if (!$product->save()) {
             return redirect()->back()->with('error', 'Sorry, there\'re a problem while updating product.');

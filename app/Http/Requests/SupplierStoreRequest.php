@@ -24,7 +24,7 @@ class SupplierStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'supplier_name' => 'required|string|max:50',
+            'supplier_name' => 'required|string|max:50|unique:suppliers',
 			'address' => 'nullable|string|max:50',
 			'phone' => 'nullable|string|max:50',
 			//'avatar' => 'nullable|image',

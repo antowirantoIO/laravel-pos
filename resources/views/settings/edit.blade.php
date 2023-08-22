@@ -53,7 +53,7 @@
                     <input type="checkbox" class="custom-control-input" id="customSwitch1" value="1" name="date_system" {{ old('date_system', config('settings.date_system')) == 1 ? 'checked' : '' }}>
                     <label class="custom-control-label" for="customSwitch1">System Date Time</label>
                 </div>
-                <input type="time" {{ config('settings.date_system') != 1 ? 'disabled' : '' }} name="date_system_value" class="form-control mt-3 @error('date_system_value') is-invalid @enderror" id="date_system_value" placeholder="Date Time" value="{{ old('date_system_value', config('settings.date_system_value')) }}">
+                <input type="datetime-local" {{ config('settings.date_system') != 1 ? 'disabled' : '' }} name="date_system_value" class="form-control mt-3 @error('date_system_value') is-invalid @enderror" id="date_system_value" placeholder="Date Time" value="{{ old('date_system_value', config('settings.date_system_value')) }}">
 
                 @error('date_system')
                 <span class="invalid-feedback" role="alert">

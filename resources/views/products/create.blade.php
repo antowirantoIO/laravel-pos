@@ -94,9 +94,10 @@
                 <label for="uom">UoM</label>
 
                 <select name="uom" class="form-control select @error('uom') is-invalid @enderror" style="height: 5rem" id="uom">
-                    @foreach (\App\Models\Product::UOM as $uom => $value)
-                    <option value="{{ $uom }}" {{ old('uom') == $uom ? 'selected' : '' }}>
-                        {{ $uom }}</option>
+                    <option value="">Select UoM</option>
+                    @foreach ($uom as $value)
+                    <option value="{{ $value->id }}" {{ old('uom') == $uom ? 'selected' : '' }}>
+                        {{ $value->name }}</option>
                     @endforeach
                 </select>
 

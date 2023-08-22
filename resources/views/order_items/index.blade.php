@@ -24,7 +24,7 @@
                     <td>{{$order->order_id}}</td>
                     <td>{{$order->product->name}}</td>
                     <td>{{$order->quantity}}</td>
-                    <td>{{$order->product->uom}}</td>
+                    <td>{{$order->product->uom_prod->name}}</td>
                     <td>{{$order->price}}</td>
                     <td>{{$order->barcode}}</td>
                 </tr>

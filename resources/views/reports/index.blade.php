@@ -11,7 +11,7 @@
                 <div>
                 <label for="laporan">Laporan</label>
                 <select name="laporan" class="form-control select" id="laporan">
-                    <option value="laba_rugi">Laporan Laba Rugi</option>
+                    <option value="laba_rugi">Laporan Laba Kotor</option>
                     <option value="persediaan_barang">Laporan Persediaan Barang</option>
                     <option value="barang_expired">Laporan Barang Akan Expired</option>
                 </select>
@@ -41,7 +41,7 @@
             <div class="d-flex ms-4" style="gap:5px">
             <div>
                 <button type="button" id="download_button" class="btn btn-primary">
-                    Excel Report
+                    Download Report
                 </button>
             </div>
             <div>
@@ -100,7 +100,11 @@
         if(jenis_laporan == "" || bulan == "" || tahun == ""){
             alert("Harap isi semua field")
         }else{
-            window.location.href = "/admin/reports/download?jenis_laporan="+jenis_laporan+"&bulan="+bulan+"&tahun="+tahun
+            if(jenis_laporan == "laba_rugi"){
+                window.location.href = "/admin/reports/labakotor?bulan="+bulan+"&tahun="+tahun
+            } else {
+                window.location.href = "/admin/reports/download?jenis_laporan="+jenis_laporan+"&bulan="+bulan+"&tahun="+tahun
+            }
         }
     })
 </script>

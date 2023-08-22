@@ -13,9 +13,9 @@ class HPPProduct extends Model
 
     protected $fillable = [
         'product_id',
-        'quantity',
-        'price',
-        'total'
+        'hpp',
+        'bulan',
+        'tahun'
     ];
 
     public function product()

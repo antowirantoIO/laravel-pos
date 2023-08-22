@@ -7,9 +7,12 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Events\AfterSheet; // Import AfterSheet class
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat; // Import NumberFormat class
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
-class ProductExport implements FromQuery, WithHeadings, WithMapping
+class ProductExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
 {
     use Exportable;
 
@@ -33,14 +36,31 @@ class ProductExport implements FromQuery, WithHeadings, WithMapping
 
     public function map($product): array
     {
+    
         return [
             $product->id,
             $product->name,
-            $product->barcode,
-            $product->price,
-            $product->purchase_price,
+            intval($product->barcode),
+            "Rp." . number_format($product->price),
+            "Rp." . number_format($product->purchase_price),
             $product->quantity,
-            Product::UOM[$product->uom],
+            $product->uom_prod->name,
         ];
     }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $sheet = $event->sheet;
+
+                foreach ($sheet->getColumnIterator('C') as $column) {
+                    foreach ($column->getCellIterator() as $cell) {
+                        $cell->setValueExplicit($cell->getValue(), DataType::TYPE_NUMERIC);
+                    }
+                }
+            },
+        ];
+    }
+
 }

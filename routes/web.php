@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\UOMController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,6 +31,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 	Route::resource('customers', CustomerController::class);
     Route::resource('orders', OrderController::class);
 	Route::resource('order_items', OrderItemController::class);
+    Route::resource('uom', UOMController::class);
 
     Route::get('/purchase_orders/show/{id}', [OrderController::class, 'show_purchase'])->name('orders.purchase_order');
 
@@ -47,7 +49,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::get('/reports', [App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
     Route::get('/reports/download', [App\Http\Controllers\ReportsController::class, 'download'])->name('reports.download');
-    Route::get('/reports/labakotor', [App\Http\Controllers\ReportsController::class, 'hitungLabaKotor'])->name('reports.hitungLabaKotor');
+    Route::get('/reports/labakotor', [App\Http\Controllers\ReportsController::class, 'calculate'])->name('reports.hitungLabaKotor');
 });
 
 Route::get('suppliers/json', function() {

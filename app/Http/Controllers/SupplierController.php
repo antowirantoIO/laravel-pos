@@ -48,6 +48,8 @@ class SupplierController extends Controller
 		'phone'  => $request->phone,
 		//'avatar'  => $avatar_path,
 		'user_id'  => $request->user()->id,
+        'created_at' => dateformat_custom(),
+        'updated_at' => dateformat_custom(),
 	] );
 		
 		if (! $supplier) {
@@ -90,6 +92,7 @@ class SupplierController extends Controller
         $supplier->supplier_name = $request->supplier_name;
 		$supplier->address = $request->address;
 		$supplier->phone = $request->phone;
+        $supplier->updated_at = dateformat_custom();
 		
 		/*if ($request->hasFile('avatar')) {
 			//Delete old avatar

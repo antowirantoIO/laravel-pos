@@ -26,7 +26,7 @@ class ProductResource extends JsonResource
             'expired_date' => $this->expired_date,
             'quantity' => $this->quantity,
             'status' => $this->status,
-            'uom' => $this->uom,
+            'uom' => $this->uom_prod->name,
             'created_at' => $this->created_at,
             'image_url' => Storage::url($this->image)
         ];

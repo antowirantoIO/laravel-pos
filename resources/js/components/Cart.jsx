@@ -81,7 +81,21 @@ class Cart extends Component {
     loadProducts(search = "") {
         const query = !!search ? `?search=${search}` : "";
         axios.get(`/admin/products${query}`).then((res) => {
-            const products = res.data.data ?? [];
+            const prod = res.data.data;
+            const productsList = prod.filter((p) => p.status == "1");
+            productsList.sort((a, b) => {
+                if (a.name < b.name) {
+                    return -1;
+                }
+
+                if (a.name > b.name) {
+                    return 1;
+                }
+
+                return 0;
+            });
+            // ambil 9 data teratas
+            const products = productsList.slice(0, 9);
             this.setState({ products });
         });
     }

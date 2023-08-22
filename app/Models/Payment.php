@@ -10,6 +10,8 @@ class Payment extends Model
         'amount',
         'order_id',
         'user_id',
-        'supplier_id'
+        'supplier_id',
+        'created_at',
+        'updated_at',
     ];
 }

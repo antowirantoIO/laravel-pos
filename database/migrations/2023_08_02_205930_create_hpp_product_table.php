@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('hpp_product', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Product::class);
-            $table->integer('quantity');
-            $table->integer('price');
-            $table->integer('total');
+            $table->string('hpp');
+            $table->integer('bulan');
+            $table->integer('tahun');
             $table->timestamps();
         });
     }

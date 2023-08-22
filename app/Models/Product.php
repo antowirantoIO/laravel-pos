@@ -15,7 +15,9 @@ class Product extends Model
         'expired_date',
         'quantity',
         'status',
-        'uom'
+        'uom',
+        'created_at',
+        'updated_at'
     ];
 
     // craete enum for uom in indonesia
@@ -57,6 +59,11 @@ class Product extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function uom_prod()
+    {
+        return $this->hasOne(UOM::class, 'id', 'uom');
     }
     
 }

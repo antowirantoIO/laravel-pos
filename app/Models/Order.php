@@ -15,6 +15,8 @@ class Order extends Model
         'order_id',
         'due_day',
         'supplier_id',
+        'created_at',
+        'updated_at',
     ];
 
     public function items()

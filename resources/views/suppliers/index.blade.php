@@ -34,9 +34,12 @@
 	</tr>
 	</thead>
 	<tbody>
+	@php 
+		$no = 1;
+	@endphp
 	@foreach ($suppliers as $supplier)
 	<tr>
-		<td>{{$supplier->id}}</td>
+		<td>{{$no++}}</td>
 		<!--<td>
 			<img width="50" src="{{$supplier->getAvatarUrl()}}" alt=""</td>-->
 		<td>{{$supplier->supplier_name}}</td>
@@ -61,7 +64,7 @@
 <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
 <script>
     var table = $('.table-datatable').DataTable({
-        "order": [[ 5, "desc" ]]
+        
     });
 	//$(document).ready(function () {
 		$(document).on('click', '.btn-delete', function () {

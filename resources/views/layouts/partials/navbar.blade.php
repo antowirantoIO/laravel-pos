@@ -45,7 +45,7 @@
             Session::get('expired_product_list_lenght');
           }} Barang Expired Hari Ini</span>
           <div class="dropdown-divider"></div>
-          @foreach (Session::get('expired_product_list') as $item)
+          @foreach (Session::get('expired_product_list') ?? [] as $item)
           <a href="#" class="dropdown-item">
             <i class="fas fa-envelope mr-2"></i> {{ $item->name }}
             <!-- <span class="float-right text-muted text-sm">3 mins</span> -->

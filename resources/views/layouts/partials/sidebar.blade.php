@@ -42,6 +42,12 @@
                         <p>Suppliers</p>
                     </a>
                 </li>
+                <li class="nav-item has-treeview">
+                    <a href="{{ route('uom.index') }}" class="nav-link {{ activeSegment('uom') }}">
+                        <i class="nav-icon fas fa-inbox"></i>
+                        <p>UOM</p>
+                    </a>
+                </li>
                 <li class="nav-header">POS</li>
 				<li class="nav-item has-treeview">
                     <a href="{{ route('purchase.index') }}" class="nav-link {{ activeSegment('purchase') }}">

@@ -16,15 +16,12 @@ class SettingController extends Controller
     {
         $data = $request->except('_token');
         $data['date_system'] = $data['date_system'] ?? 0;
-        $data['date_system_value'] = $data['date_system'] ? $data['date_system_value'] : null;
+        // $data['date_system_value'] = $data['date_system'] ? $data['date_system_value'] : null;
+        $data['date_system_value'] = $data['date_system'] ? date('Y-m-d H:i:s', strtotime($data['date_system_value'])) : null;
         foreach ($data as $key => $value) {
             $setting = Setting::firstOrCreate(['key' => $key]);
             $setting->value = $value;
             $setting->save();
-        }
-        
-        if ($data['date_system'] == 1) {
-            exec('sudo date -s "' . $data['date_system_value'] . '"');
         }
 
         return redirect()->route('settings.index');
